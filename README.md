@@ -1,24 +1,23 @@
-# web
+# g-market 중고장터 프론트 앱
 
-## Project setup
+## Install
+
 ```
-yarn install
+git clone https://gitlab.gabia.com/mentoring/intern/2021.01/g-market/web.git
+
+npm install
+
+# or
+
+yarn
 ```
 
-### Compiles and hot-reloads for development
+## start
+
 ```
+npm run serve
+
+# or
+
 yarn serve
 ```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
