@@ -9,27 +9,35 @@ globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
 parserOptions:
-  ecmaVersion: 2018
-  sourceType: module
+  parser: babel-eslint
 plugins:
   - vue
-rules: 
-  space-before-blocks: # https://eslint.org/docs/rules/space-before-blocks
-  - error
-  - always
-  no-console: error # deploy 단계에선 console.log를 지우고 올리거나 주석 처리를 한다.
-  no-new-object: error # new Object()
-  no-array-constructor: error # new Array()
-  no-new-func: error # new Function()
-  function-paren-newline: # https://eslint.org/docs/rules/function-paren-newline
-  - error
-  - multiline #  하나에 줄 바꿈이 있으면 함수 괄호 안에 줄 바꿈이 필요합니다. 그렇지 않으면 줄 바꿈을 허용하지 않습니다.
+rules:
+  indent:
+    - error
+    - 2
+  space-before-blocks:
+    - error
+    - always
+  no-console: error
+  no-new-object: error
+  no-array-constructor: error
+  no-new-func: error
+  function-paren-newline:
+    - error
+    - multiline
   eqeqeq:
-  - error
-  - always # use ===
+    - error
+    - always
   no-var:
-  - error
+    - error
   comma-spacing:
-  - error
-  - before: false 
-    after: true
+    - error
+    - before: false
+      after: true
+overrides:
+  - files:
+      - '**/__tests__/*.{j,t}s?(x)'
+      - '**/tests/unit/**/*.spec.{j,t}s?(x)'
+    env:
+      jest: true
