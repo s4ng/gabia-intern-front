@@ -1,7 +1,6 @@
 image: node:lts
 
 stages:
-  - install
   - lint
   - test
   - build
@@ -12,30 +11,42 @@ cache:
   paths:
     - node_modules/
 
-dependencies:
-  stage: install
-  script:
-    - npm i
-
 lint: 
   stage: lint
   script:
+    - npm i
     - npm run lint
+  cache:
+    paths:
+      - node_modules/
+
 
 # unit-test:
 #   stage: test
 #   script:
 #     - npm run test:unit
+  # cache:
+  #   key: ${CI_COMMIT_REF_SLUG}
+  #   paths:
+  #     - node_modules/
 
 # e2e-test:
 #   stage: test
 #   script:
 #     - npm run test:e2e
+  # cache:
+  #   key: ${CI_COMMIT_REF_SLUG}
+  #   paths:
+  #     - node_modules/
 
 build:
   stage: build
   script: 
     - npm run build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
   # only:
   #   - master
 
