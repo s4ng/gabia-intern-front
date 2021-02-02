@@ -13,31 +13,26 @@ cache:
     - node_modules/
 
 dependencies:
-  image: node:lts
   stage: install
   script:
     - npm i
 
 lint: 
-  image: node:lts
   stage: lint
   script:
     - npm run lint
 
 # unit-test:
-#   image: node:lts
 #   stage: test
 #   script:
 #     - npm run test:unit
 
 # e2e-test:
-#   image: node:lts
 #   stage: test
 #   script:
 #     - npm run test:e2e
 
 build:
-  image: node:lts
   stage: build
   script: 
     - npm run build
