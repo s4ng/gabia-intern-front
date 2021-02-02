@@ -20,17 +20,18 @@
     <v-divider class="mb-1" />
 
     <v-list
-      dense
       nav
     >
+    <router-link
+      style="text-decoration:none;"
+      to="/">
       <v-list-item>
         <v-list-item-avatar
           class="align-self-center"
           color="white"
-          contain
         >
           <v-img
-            src="https://demos.creative-tim.com/vuetify-material-dashboard/favicon.ico"
+            src="@/assets/favicon.png"
             max-height="30"
           />
         </v-list-item-avatar>
@@ -42,6 +43,7 @@
           />
         </v-list-item-content>
       </v-list-item>
+    </router-link>
     </v-list>
 
     <v-divider class="mb-2" />
@@ -97,27 +99,27 @@ export default {
     items: [
       {
         icon: 'mdi-view-dashboard',
-        title: '최근 게시물',
+        title: 'recent posts',
         to: '/'
       },
       {
-        icon: 'mdi-alert-circle',
-        title: '공지사항',
-        to: '/notice',
-      },
-      {
         icon: 'mdi-account-group',
-        title: '중고 게시판',
+        title: 'used board',
         to: '/used',
       },
       {
         icon: 'mdi-account-group-outline',
-        title: '나눔 게시판',
+        title: 'share board',
         to: '/share',
       },
       {
+        icon: 'mdi-alert-circle',
+        title: 'notice',
+        to: '/notice',
+      },
+      {
         icon: 'mdi-file-multiple',
-        title: '거래 내역',
+        title: 'transaction history',
         to: '/history',
       }
     ],
@@ -139,7 +141,7 @@ export default {
     profile () {
       return {
         avatar: true,
-        title: 'G - Market',
+        title: this.$t('title'),
       }
     },
   },
@@ -151,9 +153,6 @@ export default {
         children: item.children ? item.children.map(this.mapItem) : undefined,
         title: this.$t(item.title),
       }
-    },
-    goToHome () {
-
     }
   },
 }

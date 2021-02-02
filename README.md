@@ -5,6 +5,8 @@
 ```
 git clone https://gitlab.gabia.com/mentoring/intern/2021.01/g-market/web.git
 
+cd web
+
 npm install
 
 # or
