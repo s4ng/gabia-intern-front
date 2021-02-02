@@ -1,18 +1,26 @@
+image: node:lts
+
 stages:
+  - install
   - lint
   - test
   - build
   - deploy
 
 cache:
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
+
+dependencies:
+  image: node:lts
+  stage: install
+  script:
+    - npm i
 
 lint: 
   image: node:lts
   stage: lint
-  before_script:
-    - npm install
   script:
     - npm run lint
 
