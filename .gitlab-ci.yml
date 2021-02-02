@@ -40,6 +40,7 @@ deploy:
   services:
     - docker:19.03.12-dind
   image: docker:19.03.12
+  stage: deploy
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
   script:
