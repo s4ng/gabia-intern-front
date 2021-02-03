@@ -1,0 +1,43 @@
+env:
+  browser: true
+  es6: true
+  node: true
+extends:
+  - 'eslint:recommended'
+  - 'plugin:vue/essential'
+globals:
+  Atomics: readonly
+  SharedArrayBuffer: readonly
+parserOptions:
+  parser: babel-eslint
+plugins:
+  - vue
+rules:
+  indent:
+    - error
+    - 2
+  space-before-blocks:
+    - error
+    - always
+  no-console: error
+  no-new-object: error
+  no-array-constructor: error
+  no-new-func: error
+  function-paren-newline:
+    - error
+    - multiline
+  eqeqeq:
+    - error
+    - always
+  no-var:
+    - error
+  comma-spacing:
+    - error
+    - before: false
+      after: true
+overrides:
+  - files:
+      - '**/__tests__/*.{j,t}s?(x)'
+      - '**/tests/unit/**/*.spec.{j,t}s?(x)'
+    env:
+      jest: true
