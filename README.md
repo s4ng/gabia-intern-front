@@ -1,9 +1,15 @@
 # g-market 중고장터 프론트 앱
 
-## Install
+## 배포
+
+[139.150.76.145](139.150.76.145)
+
+## 설치
 
 ```
 git clone https://gitlab.gabia.com/mentoring/intern/2021.01/g-market/web.git
+
+cd web
 
 npm install
 
@@ -12,7 +18,7 @@ npm install
 yarn
 ```
 
-## start
+## 실행
 
 ```
 npm run serve

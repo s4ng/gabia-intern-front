@@ -74,7 +74,7 @@
             bordered
           >
             <template v-slot:badge>
-              <span>5</span>
+              <span>{{notifications.length}}</span>
             </template>
 
             <v-icon>mdi-bell</v-icon>
@@ -153,11 +153,7 @@ export default {
 
   data: () => ({
     notifications: [
-      'Mike John Responded to your email',
-      'You have 5 new tasks',
-      'You\'re now friends with Andrew',
-      'Another Notification',
-      'Another one',
+      '알림 테스트입니다.',
     ],
   }),
 

@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /dist
+/builds
+/cache
 package-lock.json
 
 /tests/e2e/videos/
