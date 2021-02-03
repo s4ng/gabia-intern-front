@@ -37,27 +37,29 @@ lint:
 #   script:
 #     - npm run test:e2e
 
-build:
-  image: node:lts
-  stage: build
-  script: 
-    - npm run build
-  artifacts:
-    paths:
-      - dist/
-    expire_in: 1 hour
-  # only:
-  #   - master
+# --- 아래 1.0.0 배포 후 설정 ---
 
-deploy:
-  stage: deploy
-  image: docker:stable
-  services:
-    - docker:dind
-  before_script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
-  script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-    - docker push "$CI_REGISTRY_IMAGE"
-  # only:
-  #   - master
+# build:
+#   image: node:lts
+#   stage: build
+#   script: 
+#     - npm run build
+#   artifacts:
+#     paths:
+#       - dist/
+#     expire_in: 1 hour
+#   # only:
+#   #   - master
+
+# deploy:
+#   stage: deploy
+#   image: docker:stable
+#   services:
+#     - docker:dind
+#   before_script:
+#     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
+#   script:
+#     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+#     - docker push "$CI_REGISTRY_IMAGE"
+#   # only:
+#   #   - master
