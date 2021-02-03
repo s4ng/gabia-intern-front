@@ -37,10 +37,6 @@ lint:
 #   script:
 #     - npm run test:e2e
 
-
-# ----  1.0.0 배포 후 설정 -----
-
-
 build:
   image: node:lts
   stage: build
