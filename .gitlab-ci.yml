@@ -30,22 +30,16 @@ lint:
 #   stage: test
 #   script:
 #     - npm run test:unit
-  # cache:
-  #   key: ${CI_COMMIT_REF_SLUG}
-  #   paths:
-  #     - node_modules/
-  #   policy: pull
 
 # e2e-test:
 # image: node:lts
 #   stage: test
 #   script:
 #     - npm run test:e2e
-  # cache:
-  #   key: ${CI_COMMIT_REF_SLUG}
-  #   paths:
-  #     - node_modules/
-  #   policy: pull
+
+
+# ----  1.0.0 배포 후 설정 -----
+
 
 build:
   image: node:lts
@@ -56,8 +50,8 @@ build:
     paths:
       - dist/
     expire_in: 1 hour
-  # only:
-  #   - master
+  only:
+    - master
 
 deploy:
   stage: deploy
@@ -67,7 +61,7 @@ deploy:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:0.0.1" .
-    - docker push "$CI_REGISTRY_IMAGE:0.0.1"
-  # only:
-  #   - master
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    - master

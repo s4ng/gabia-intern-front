@@ -1,11 +1,10 @@
-FROM nginx:stable as build-stage
+FROM nginx:stable
 # 작업 디렉토리 설정
-WORKDIR /app
-RUN rm ./app/dist
+WORKDIR /
 
-COPY ./dist ./app/
-COPY ./nginx/nginx.conf /etc/nginx/conf/app.conf
+RUN rm -rf /etc/nginx/conf.d
+COPY nginx /etc/nginx/conf.d
 
-COPY --from=build-stage /app /usr/share/nginx/html/app
+ADD ./dist ./usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
