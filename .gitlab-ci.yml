@@ -18,6 +18,7 @@ install_dependencies:
   artifacts:
     paths:
       - node_modules/
+    expire_in: 1 hour
 
 lint: 
   stage: lint
@@ -48,6 +49,10 @@ build:
   stage: build
   script: 
     - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
   # only:
   #   - master
 
