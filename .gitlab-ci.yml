@@ -15,6 +15,9 @@ install_dependencies:
   stage: install
   script:
     - npm install
+  artifacts:
+    paths:
+      - node_modules/
 
 lint: 
   stage: lint
