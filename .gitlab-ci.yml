@@ -1,25 +1,25 @@
 image: node:lts
 
 stages:
+  - install
   - lint
   - test
   - build
   - deploy
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
+
+install_dependencies:
+  stage: install
+  script:
+    - npm install
 
 lint: 
   stage: lint
   script:
-    - npm install
     - npm run lint
-  cache:
-    paths:
-      - node_modules/
-
 
 # unit-test:
 #   stage: test
@@ -29,6 +29,7 @@ lint:
   #   key: ${CI_COMMIT_REF_SLUG}
   #   paths:
   #     - node_modules/
+  #   policy: pull
 
 # e2e-test:
 #   stage: test
@@ -38,23 +39,20 @@ lint:
   #   key: ${CI_COMMIT_REF_SLUG}
   #   paths:
   #     - node_modules/
+  #   policy: pull
 
 build:
   stage: build
   script: 
     - npm run build
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - node_modules/
   # only:
   #   - master
 
 deploy:
+  stage: deploy
   services:
     - docker:19.03.12-dind
   image: docker:19.03.12
-  stage: deploy
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
   script:
