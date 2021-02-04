@@ -4,7 +4,7 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'hash',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
@@ -14,7 +14,7 @@ export default new Router({
         {
           name: '최근 게시물',
           path: '',
-          component: () => import('@/views/pages/MainPage')
+          component: () => import('@/views/pages/RecentPosts')
         },
         {
           name: '공지사항',
