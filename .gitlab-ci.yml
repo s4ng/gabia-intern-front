@@ -25,11 +25,11 @@ lint:
   script:
     - npm run lint
 
-# unit-test:
-# image: node:lts
-#   stage: test
-#   script:
-#     - npm run test:unit
+unit-test:
+image: node:lts
+  stage: test
+  script:
+    - npm run test
 
 # e2e-test:
 # image: node:lts
