@@ -92,6 +92,8 @@ export default {
         default:
           return '';
         }
+      } else {
+        return 'error';
       }
     },
     switchStatusColor() {
@@ -120,6 +122,8 @@ export default {
         default:
           return '';
         }
+      } else {
+        return 'error'
       }
     },
     boardTypeCheck() {
@@ -128,6 +132,8 @@ export default {
         return "가격 : " + this.price;
       } else if(this.type === 'share') {
         return this.deadline + " 까지";
+      } else {
+        return 'error'
       }
     }
   }
