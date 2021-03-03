@@ -22,7 +22,7 @@
               <v-spacer></v-spacer>
               
               <v-card-text
-                v-text="boardTypeCheck" class="h3 ma-4"></v-card-text>
+                v-html="boardTypeCheck" class="h3 ma-4"></v-card-text>
             </div>
           </div>
           <v-row>
@@ -34,6 +34,7 @@
                 class="ml-2 pa-4">
                 <v-row
                   class="ma-auto subtitle-2"
+                  data-test="switch-status"
                   justify="center"
                   v-text="switchStatus">
                 </v-row>
@@ -60,11 +61,6 @@
 <script>
 export default {
   props: ['type', 'img', 'title', 'price', 'deadline', 'status', 'seller'],
-  data: () => ({
-    statusColor : '',
-    // 중고글이면 price, 나눔글이면 deadline
-    subTitle : ''
-  }),
   computed: {
     switchStatus() {
 
@@ -129,9 +125,16 @@ export default {
     boardTypeCheck() {
 
       if(this.type === 'used') {
-        return "가격 : " + this.price;
+
+        // 화폐 단위로 변환, 3자리 마다 ',' 삽입.
+        return "가격 : " + this.price.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원';
       } else if(this.type === 'share') {
-        return this.deadline + " 까지";
+
+        // 불필요 한 뒷 부분 (밀리초 단위) 삭제
+        let deadlineDateTime = this.deadline.split(' ');
+        deadlineDateTime = deadlineDateTime[0] + ' ' + deadlineDateTime[1].split('.')[0];
+
+        return deadlineDateTime + " 까지";
       } else {
         return 'error'
       }

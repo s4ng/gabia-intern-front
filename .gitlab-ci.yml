@@ -10,14 +10,9 @@ test:
   image: node:lts
   stage: test
   script:
+    # lint 는 커밋 전에 수행하기로 결정함
     - npm install
     - npm run test
-#     - npm run test:e2e
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
-
 
 # --- 아래 1.0.0 배포 후 설정 ---
 
