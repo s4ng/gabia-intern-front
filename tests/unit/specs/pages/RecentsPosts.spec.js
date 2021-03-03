@@ -5,7 +5,7 @@ import Vuetify from 'vuetify'
 const localVue = createLocalVue();
 localVue.use(Vuetify, {});
 
-describe('RecentsPosts test', () => {
+describe('RecentsPosts.vue', () => {
 
   let wrapper;
 
@@ -16,7 +16,8 @@ describe('RecentsPosts test', () => {
     });
   })
 
-  test('App should work', () => {
-    expect(true).toBe(true)
+  test('Title text test', () => {
+    expect(wrapper.find('[data-test="recent-used-title"]').text()).toEqual('최근 중고게시물');
+    expect(wrapper.find('[data-test="recent-share-title"]').text()).toEqual('최근 나눔게시물');
   })
 })

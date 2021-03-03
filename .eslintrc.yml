@@ -19,7 +19,7 @@ rules:
   space-before-blocks:
     - error
     - always
-  no-console: error
+  # no-console: error
   no-new-object: error
   no-array-constructor: error
   no-new-func: error

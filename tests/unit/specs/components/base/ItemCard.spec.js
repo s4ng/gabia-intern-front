@@ -19,20 +19,22 @@ describe('ItemCard.vue', () => {
         vuetify: new Vuetify(),
         propsData: {
           // 나눔 글 카드
-          type:"share",
-          img:"https://kr.vuejs.org/images/logo.png",
-          title:"testItem",
-          deadline:'2021-03-23 13:13:05.34234',
-          status:"CREATE",
-          seller:"dino"
+          board: {
+            type:"share",
+            img:"https://kr.vuejs.org/images/logo.png",
+            title:"testItem",
+            deadline:'2021-03-23 13:13:05.34234',
+            status:"CREATE",
+            seller:"dino"
+          }
         }
       })
     })
 
     test('props test', () => {
-      expect(wrapper.props().type).toBe('share');
-      expect(wrapper.props().status).toBe('CREATE');
-      expect(wrapper.props().seller).toBe('dino');
+      expect(wrapper.props().board.type).toBe('share');
+      expect(wrapper.props().board.status).toBe('CREATE');
+      expect(wrapper.props().board.seller).toBe('dino');
     })
   })
 
@@ -45,20 +47,22 @@ describe('ItemCard.vue', () => {
         attachTo: '#app > div',
         vuetify: new Vuetify(),
         propsData: {
-          type:"used",
-          img:"https://kr.vuejs.org/images/logo.png",
-          title:"testItem",
-          price:'50000',
-          status:"CREATE",
-          seller:"dino"
+          board: {
+            type:"used",
+            img:"https://kr.vuejs.org/images/logo.png",
+            title:"testItem",
+            price:'50000',
+            status:"CREATE",
+            seller:"dino"
+          }
         }
       })
     })
 
     test('props test', () => {
-      expect(wrapper.props().type).toBe('used');
-      expect(wrapper.props().status).toBe('CREATE');
-      expect(wrapper.props().seller).toBe('dino');
+      expect(wrapper.props().board.type).toBe('used');
+      expect(wrapper.props().board.status).toBe('CREATE');
+      expect(wrapper.props().board.seller).toBe('dino');
     })
   })
 })

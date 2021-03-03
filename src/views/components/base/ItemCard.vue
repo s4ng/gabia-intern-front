@@ -9,7 +9,7 @@
               lazy-src="http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif"
               max-height="200"
               max-width="200"
-              v-bind:src="img"></v-img>
+              v-bind:src="board.img"></v-img>
           </div>
         </v-col>
         <v-col cols="8">
@@ -17,12 +17,12 @@
             <div>
               <v-card-title
                 class="headline ml-3"
-                v-text="title"></v-card-title>
+                v-text="board.title"></v-card-title>
 
               <v-spacer></v-spacer>
               
               <v-card-text
-                v-html="boardTypeCheck" class="h3 ma-4"></v-card-text>
+                v-html="switchSubtitleByBoardType" class="h3 ma-4"></v-card-text>
             </div>
           </div>
           <v-row>
@@ -34,7 +34,6 @@
                 class="ml-2 pa-4">
                 <v-row
                   class="ma-auto subtitle-2"
-                  data-test="switch-status"
                   justify="center"
                   v-text="switchStatus">
                 </v-row>
@@ -48,7 +47,7 @@
                 <v-row
                   class="ma-auto subtitle-2"
                   justify="center"
-                  v-text="seller">
+                  v-text="board.seller">
                 </v-row>
               </v-card>
             </v-col>
@@ -60,13 +59,16 @@
 
 <script>
 export default {
-  props: ['type', 'img', 'title', 'price', 'deadline', 'status', 'seller'],
+  props: {
+    board: {}
+  },
+  //['type', 'img', 'title', 'price', 'deadline', 'status', 'seller'],
   computed: {
     switchStatus() {
 
-      if(this.type === 'used') {
+      if(this.board.type === 'used') {
 
-        switch(this.status) {
+        switch(this.board.status) {
         case 'CREATE':
           return '판매중';
         case 'CLOSE': 
@@ -76,9 +78,9 @@ export default {
         default:
           return '';
         }
-      } else if(this.type === 'share') {
+      } else if(this.board.type === 'share') {
 
-        switch(this.status) {
+        switch(this.board.status) {
         case 'CREATE':
           return '나눔중';
         case 'CLOSE': 
@@ -94,9 +96,9 @@ export default {
     },
     switchStatusColor() {
 
-      if(this.type === 'used') {
+      if(this.board.type === 'used') {
 
-        switch(this.status) {
+        switch(this.board.status) {
         case 'CREATE':
           return '#A5D6A7';
         case 'CLOSE': 
@@ -106,9 +108,9 @@ export default {
         default:
           return '';
         }
-      } else if(this.type === 'share') {
+      } else if(this.board.type === 'share') {
 
-        switch(this.status) {
+        switch(this.board.status) {
         case 'CREATE':
           return '#A5D6A7';
         case 'CLOSE': 
@@ -122,16 +124,18 @@ export default {
         return 'error'
       }
     },
-    boardTypeCheck() {
+    switchSubtitleByBoardType() {
 
-      if(this.type === 'used') {
+      if(this.board.type === 'used') {
 
         // 화폐 단위로 변환, 3자리 마다 ',' 삽입.
-        return "가격 : " + this.price.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원';
-      } else if(this.type === 'share') {
+        let resultPrice = this.board.price;
+        resultPrice = typeof resultPrice === 'string' ? resultPrice : resultPrice.toString();
+        return "가격 : " + resultPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원';
+      } else if(this.board.type === 'share') {
 
         // 불필요 한 뒷 부분 (밀리초 단위) 삭제
-        let deadlineDateTime = this.deadline.split(' ');
+        let deadlineDateTime = this.board.deadline.split(' ');
         deadlineDateTime = deadlineDateTime[0] + ' ' + deadlineDateTime[1].split('.')[0];
 
         return deadlineDateTime + " 까지";
