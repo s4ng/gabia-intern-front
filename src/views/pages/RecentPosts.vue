@@ -38,77 +38,77 @@ export default {
   mounted() {
     // FIX : CORS 크로스 도메인 해제 후 수정
 
-    const apiUrl = process.env.VUE_APP_API_URL;
+    // const apiUrl = process.env.VUE_APP_API_URL;
 
-    this.$axios
-      .get(apiUrl + '/boards/PRESENT/posts?page=1')
-      .then((res) => {
-        this.shareItems = res.data;
-      })
-      .catch((e) =>  {
-        console.error(e.message);
-      })
+    // this.$axios
+    //   .get(apiUrl + '/boards/PRESENT/posts?page=1')
+    //   .then((res) => {
+    //     this.shareItems = res.data;
+    //   })
+    //   .catch((e) =>  {
+    //     console.error(e.message);
+    //   })
 
-    this.$axios
-      .get(apiUrl + '/boards/USED/posts?page=1')
-      .then((res) => {
-        this.usedItem = res.data;
-      })
-      .catch((e) => {
-        console.error(e.message);
-      })
-    // this.usedItems = [{
-    //   id: 1,
-    //   type:"used",
-    //   img:"https://kr.vuejs.org/images/logo.png",
-    //   title:"testItem",
-    //   price: "50000",
-    //   status:"CREATE",
-    //   seller:"dino"
-    // }, 
-    // {
-    //   id: 2,
-    //   type:"used",
-    //   img:"https://kr.vuejs.org/images/logo.png",
-    //   title:"testItem",
-    //   price: 4500,
-    //   status:"CREATE",
-    //   seller:"dino"
-    // },
-    // {
-    //   id: 3,
-    //   type:"used",
-    //   img:"https://kr.vuejs.org/images/logo.png",
-    //   title:"testItem",
-    //   price: "50000",
-    //   status:"CREATE",
-    //   seller:"dino"
-    // }, 
-    // {
-    //   id: 4,
-    //   type:"used",
-    //   img:"https://kr.vuejs.org/images/logo.png",
-    //   title:"testItem",
-    //   price: 4500,
-    //   status:"CREATE",
-    //   seller:"dino"
-    // }]
-    // this.shareItems = [{
-    //   type:"share",
-    //   title:"testItem",
-    //   deadline:'2021-03-23 13:13:05.34234',
-    //   status:"CREATE",
-    //   seller:"dino"
-    // }, 
-    // {
-    //   id: 2,
-    //   type:"share",
-    //   img:"https://kr.vuejs.org/images/logo.png",
-    //   title:"testItem",
-    //   deadline:'2021-03-23 13:13:05.34234',
-    //   status:"CREATE",
-    //   seller:"dino"
-    // }]
+    // this.$axios
+    //   .get(apiUrl + '/boards/USED/posts?page=1')
+    //   .then((res) => {
+    //     this.usedItem = res.data;
+    //   })
+    //   .catch((e) => {
+    //     console.error(e.message);
+    //   })
+    this.usedItems = [{
+      board_id: 1,
+      board_type:"used",
+      img:"https://kr.vuejs.org/images/logo.png",
+      title:"testItem",
+      sell_price: "50000",
+      status:"CREATE",
+      user_id:"dino"
+    }, 
+    {
+      board_id: 2,
+      board_type:"used",
+      img:"https://kr.vuejs.org/images/logo.png",
+      title:"testItem",
+      sell_price: 4500,
+      status:"CREATE",
+      user_id:"dino"
+    },
+    {
+      board_id: 3,
+      board_type:"used",
+      img:"https://kr.vuejs.org/images/logo.png",
+      title:"testItem",
+      sell_price: "50000",
+      status:"CREATE",
+      user_id:"dino"
+    }, 
+    {
+      board_id: 4,
+      board_type:"used",
+      img:"https://kr.vuejs.org/images/logo.png",
+      title:"testItem",
+      sell_price: 4500,
+      status:"CREATE",
+      user_id:"dino"
+    }]
+    this.shareItems = [{
+      board_type:"share",
+      title:"testItem",
+      raffle_close_at:'2021-03-23 13:13:05.34234',
+      status:"CREATE",
+      user_id:"dino"
+    }, 
+    {
+      board_id: 2,
+      board_type:"share",
+      img:"https://kr.vuejs.org/images/logo.png",
+      title:"testItem",
+      raffle_close_at:'2021-03-23 13:13:05.34234',
+      status:"CREATE",
+      user_id:"dino"
+    }]
   }
 }
 </script>

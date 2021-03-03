@@ -1,5 +1,5 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils'
-import UserProfile from '@/views/pages/RecentPosts.vue'
+import RecentPosts from '@/views/pages/RecentPosts.vue'
 import Vuetify from 'vuetify'
 
 const localVue = createLocalVue();
@@ -10,7 +10,7 @@ describe('RecentsPosts.vue', () => {
   let wrapper;
 
   beforeAll(() => {
-    wrapper = shallowMount(UserProfile, {
+    wrapper = shallowMount(RecentPosts, {
       localVue,
       vuetify: new Vuetify(),
     });
