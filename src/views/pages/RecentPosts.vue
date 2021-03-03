@@ -8,7 +8,7 @@
     <v-container
       class="d-flex flex-wrap">
       <base-item-card
-        v-for="item in usedItems.slice(0, 6)"
+        v-for="item in usedItems"
         :key="item.id"
         :board="item"/>
     </v-container>
@@ -20,7 +20,7 @@
     <v-container
       class="d-flex flex-wrap">
       <base-item-card
-        v-for="item in shareItems.slice(0, 6)"
+        v-for="item in shareItems"
         :key="item.id"
         :board="item"/>
     </v-container>
@@ -37,77 +37,82 @@ export default {
   // FIX axios 코드 넣어야함
   mounted() {
     // FIX : CORS 크로스 도메인 해제 후 수정
-    // const apiUrl = process.env.VUE_APP_API_URL;
-    // this.$axios
-    //   .get(apiUrl + '/boards/share/posts?page=1')
-    //   .then((res) => {
-    //     this.shareItems = res.data;
-    //   })
-    //   .catch((e) =>  {
-    //     console.error(e.message());
-    //   })
 
-    // this.$axios
-    //   .get(apiUrl + '/boards/used/posts?page=1')
-    //   .then((res) => {
-    //     this.usedItem = red.data;
-    //   })
-    //   .catch((e) => {
-    //     console.error(e.message());
-    //   })
-    this.usedItems = [{
-      id: 1,
-      type:"used",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
-      price: "50000",
-      status:"CREATE",
-      seller:"dino"
-    }, 
-    {
-      id: 2,
-      type:"used",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
-      price: 4500,
-      status:"CREATE",
-      seller:"dino"
-    },
-    {
-      id: 3,
-      type:"used",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
-      price: "50000",
-      status:"CREATE",
-      seller:"dino"
-    }, 
-    {
-      id: 4,
-      type:"used",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
-      price: 4500,
-      status:"CREATE",
-      seller:"dino"
-    }]
+    const apiUrl = process.env.VUE_APP_API_URL;
 
-    this.shareItems = [{
-      type:"share",
-      title:"testItem",
-      deadline:'2021-03-23 13:13:05.34234',
-      status:"CREATE",
-      seller:"dino"
-    }, 
-    {
-      id: 2,
-      type:"share",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
-      deadline:'2021-03-23 13:13:05.34234',
-      status:"CREATE",
-      seller:"dino"
-    }]
+    this.$axios
+      .get(apiUrl + '/boards/PRESENT/posts?page=1')
+      .then((res) => {
+        this.shareItems = res.data;
+      })
+      .catch((e) =>  {
+        console.error(e.message);
+      })
+
+    this.$axios
+      .get(apiUrl + '/boards/USED/posts?page=1')
+      .then((res) => {
+        this.usedItem = res.data;
+      })
+      .catch((e) => {
+        console.error(e.message);
+      })
+    // this.usedItems = [{
+    //   id: 1,
+    //   type:"used",
+    //   img:"https://kr.vuejs.org/images/logo.png",
+    //   title:"testItem",
+    //   price: "50000",
+    //   status:"CREATE",
+    //   seller:"dino"
+    // }, 
+    // {
+    //   id: 2,
+    //   type:"used",
+    //   img:"https://kr.vuejs.org/images/logo.png",
+    //   title:"testItem",
+    //   price: 4500,
+    //   status:"CREATE",
+    //   seller:"dino"
+    // },
+    // {
+    //   id: 3,
+    //   type:"used",
+    //   img:"https://kr.vuejs.org/images/logo.png",
+    //   title:"testItem",
+    //   price: "50000",
+    //   status:"CREATE",
+    //   seller:"dino"
+    // }, 
+    // {
+    //   id: 4,
+    //   type:"used",
+    //   img:"https://kr.vuejs.org/images/logo.png",
+    //   title:"testItem",
+    //   price: 4500,
+    //   status:"CREATE",
+    //   seller:"dino"
+    // }]
+    // this.shareItems = [{
+    //   type:"share",
+    //   title:"testItem",
+    //   deadline:'2021-03-23 13:13:05.34234',
+    //   status:"CREATE",
+    //   seller:"dino"
+    // }, 
+    // {
+    //   id: 2,
+    //   type:"share",
+    //   img:"https://kr.vuejs.org/images/logo.png",
+    //   title:"testItem",
+    //   deadline:'2021-03-23 13:13:05.34234',
+    //   status:"CREATE",
+    //   seller:"dino"
+    // }]
   }
 }
 </script>
+
+<style>
+
+</style>
