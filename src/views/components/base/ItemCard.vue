@@ -139,14 +139,14 @@ export default {
         // 화폐 단위로 변환, 3자리 마다 ',' 삽입.
         let resultPrice = this.board.sell_price;
         resultPrice = typeof resultPrice === 'string' ? resultPrice : resultPrice.toString();
-        return "가격 : " + resultPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '원';
+        return `가격 : ${resultPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원`
       } else if(boardType === 'share') {
 
         // 불필요 한 뒷 부분 (밀리초 단위) 삭제
         let deadlineDateTime = this.board.raffle_close_at.split(' ');
         deadlineDateTime = deadlineDateTime[0] + ' ' + deadlineDateTime[1].split('.')[0];
 
-        return deadlineDateTime + " 까지";
+        return `${deadlineDateTime} 까지`;
       } else {
         return 'error'
       }

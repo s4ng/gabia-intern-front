@@ -59,55 +59,55 @@ export default {
     //   })
     this.usedItems = [{
       board_id: 1,
-      board_type:"used",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
-      sell_price: "50000",
-      status:"CREATE",
-      user_id:"dino"
+      board_type:'used',
+      img:'https://kr.vuejs.org/images/logo.png',
+      title:'testItem',
+      sell_price: '50000',
+      status:'CREATE',
+      user_id:'dino'
     }, 
     {
       board_id: 2,
-      board_type:"used",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
+      board_type:'used',
+      img:'https://kr.vuejs.org/images/logo.png',
+      title:'testItem',
       sell_price: 4500,
-      status:"CREATE",
-      user_id:"dino"
+      status:'CREATE',
+      user_id:'dino'
     },
     {
       board_id: 3,
-      board_type:"used",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
-      sell_price: "50000",
-      status:"CREATE",
-      user_id:"dino"
+      board_type:'used',
+      img:'https://kr.vuejs.org/images/logo.png',
+      title:'testItem',
+      sell_price: '50000',
+      status:'CREATE',
+      user_id:'dino'
     }, 
     {
       board_id: 4,
-      board_type:"used",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
+      board_type:'used',
+      img:'https://kr.vuejs.org/images/logo.png',
+      title:'testItem',
       sell_price: 4500,
-      status:"CREATE",
-      user_id:"dino"
+      status:'CREATE',
+      user_id:'dino'
     }]
     this.shareItems = [{
-      board_type:"share",
-      title:"testItem",
+      board_type:'share',
+      title:'testItem',
       raffle_close_at:'2021-03-23 13:13:05.34234',
-      status:"CREATE",
-      user_id:"dino"
+      status:'CREATE',
+      user_id:'dino'
     }, 
     {
       board_id: 2,
-      board_type:"share",
-      img:"https://kr.vuejs.org/images/logo.png",
-      title:"testItem",
+      board_type:'share',
+      img:'https://kr.vuejs.org/images/logo.png',
+      title:'testItem',
       raffle_close_at:'2021-03-23 13:13:05.34234',
-      status:"CREATE",
-      user_id:"dino"
+      status:'CREATE',
+      user_id:'dino'
     }]
   }
 }

@@ -35,6 +35,9 @@ rules:
     - error
     - before: false
       after: true
+  quotes:
+    - error
+    - single
 overrides:
   - files:
       - '**/__tests__/*.{j,t}s?(x)'
