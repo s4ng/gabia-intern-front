@@ -69,32 +69,25 @@ export default {
       let boardType = this.board.board_type;
       let boardStatus = this.board.status;
 
-      if(boardType === 'used') {
+      if(boardType !== 'used' && boardType !== 'share') {
+        return 'error'
+      }
 
-        switch(boardStatus) {
-        case 'CREATE':
-          return '판매중';
-        case 'CLOSE': 
-          return '판매종료';
-        case 'DELETE':
-          return '삭제됨';
-        default:
-          return '';
-        }
-      } else if(boardType === 'share') {
+      let status = {
+        create : boardType === 'used' ? '판매중' : '나눔중',
+        close : boardType === 'used' ? '판매종료' : '나눔종료',
+        delete : '삭제됨'
+      }
 
-        switch(boardStatus) {
-        case 'CREATE':
-          return '나눔중';
-        case 'CLOSE': 
-          return '나눔종료';
-        case 'DELETE':
-          return '삭제됨';
-        default:
-          return '';
-        }
-      } else {
-        return 'error';
+      switch(boardStatus) {
+      case 'CREATE':
+        return status.create;
+      case 'CLOSE': 
+        return status.close;
+      case 'DELETE':
+        return status.delete;
+      default:
+        return '';
       }
     },
     switchStatusColor() {
@@ -102,54 +95,43 @@ export default {
       let boardType = this.board.board_type;
       let boardStatus = this.board.status;
 
-      if(boardType === 'used') {
-
-        switch(boardStatus) {
-        case 'CREATE':
-          return '#A5D6A7';
-        case 'CLOSE': 
-          return '#EF9A9A';
-        case 'DELETE':
-          return '#BDBDBD';
-        default:
-          return '';
-        }
-      } else if(boardType === 'share') {
-
-        switch(boardStatus) {
-        case 'CREATE':
-          return '#A5D6A7';
-        case 'CLOSE': 
-          return '#EF9A9A';
-        case 'DELETE':
-          return '#BDBDBD';
-        default:
-          return '';
-        }
-      } else {
+      if(boardType !== 'used' && boardType !== 'share') {
         return 'error'
       }
+
+      switch(boardStatus) {
+      case 'CREATE':
+        return '#A5D6A7';
+      case 'CLOSE': 
+        return '#EF9A9A';
+      case 'DELETE':
+        return '#BDBDBD';
+      default:
+        return '';
+      } 
     },
     switchSubtitleByBoardType() {
 
       let boardType = this.board.board_type;
 
-      if(boardType === 'used') {
-
-        // 화폐 단위로 변환, 3자리 마다 ',' 삽입.
-        let resultPrice = this.board.sell_price;
-        resultPrice = typeof resultPrice === 'string' ? resultPrice : resultPrice.toString();
-        return `가격 : ${resultPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원`
-      } else if(boardType === 'share') {
-
-        // 불필요 한 뒷 부분 (밀리초 단위) 삭제
-        let deadlineDateTime = this.board.raffle_close_at.split(' ');
-        deadlineDateTime = deadlineDateTime[0] + ' ' + deadlineDateTime[1].split('.')[0];
-
-        return `${deadlineDateTime} 까지`;
-      } else {
+      if(boardType !== 'used' && boardType !== 'share') {
         return 'error'
       }
+
+      let result = boardType === 'used'
+        ? `${this.currencyFormatter(this.board.sell_price)}`
+        : `${this.dateFormatter(this.board.raffle_close_at)}`;
+      
+      return result;
+    }
+  },
+  methods: {
+
+    currencyFormatter(price) {
+      return Intl.NumberFormat('ko-kR', {style: 'currency', currency: 'KRW'}).format(price);
+    },
+    dateFormatter(date) {
+      return `${date.replace(/\..+/, '')} 까지` // . 뒤의 문자 삭제.
     }
   }
 }

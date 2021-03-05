@@ -20,21 +20,22 @@ describe('ItemCard.vue', () => {
         propsData: {
           // 나눔 글 카드
           board: {
-            type:"share",
+            board_type:"share",
             img:"https://kr.vuejs.org/images/logo.png",
             title:"testItem",
-            deadline:'2021-03-23 13:13:05.34234',
+            raffle_close_at:'2021-03-23 13:13:05.34234',
             status:"CREATE",
-            seller:"dino"
+            write_id:"dino"
           }
         }
       })
     })
 
     test('props test', () => {
-      expect(wrapper.props().board.type).toBe('share');
+      expect(wrapper.props().board.board_type).toBe('share');
       expect(wrapper.props().board.status).toBe('CREATE');
-      expect(wrapper.props().board.seller).toBe('dino');
+      expect(wrapper.props().board.write_id).toBe('dino');
+      expect(wrapper.vm.switchSubtitleByBoardType).toEqual('2021-03-23 13:13:05 까지')
     })
   })
 
@@ -48,21 +49,22 @@ describe('ItemCard.vue', () => {
         vuetify: new Vuetify(),
         propsData: {
           board: {
-            type:"used",
+            board_type:"used",
             img:"https://kr.vuejs.org/images/logo.png",
             title:"testItem",
-            price:'50000',
+            sell_price:'50000',
             status:"CREATE",
-            seller:"dino"
+            write_id:"dino"
           }
         }
       })
     })
 
     test('props test', () => {
-      expect(wrapper.props().board.type).toBe('used');
+      expect(wrapper.props().board.board_type).toBe('used');
       expect(wrapper.props().board.status).toBe('CREATE');
-      expect(wrapper.props().board.seller).toBe('dino');
+      expect(wrapper.props().board.write_id).toBe('dino');
+      expect(wrapper.vm.switchSubtitleByBoardType).toEqual('₩50,000')
     })
   })
 })
