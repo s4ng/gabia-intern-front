@@ -27,6 +27,13 @@ describe('ItemCard.vue', () => {
             status:"CREATE",
             write_id:"dino"
           }
+        },
+        mocks: {
+          $store: {
+            state: {
+              boardType: ['notice', 'used', 'share'],
+            }
+          }
         }
       })
     })
@@ -55,6 +62,13 @@ describe('ItemCard.vue', () => {
             sell_price:'50000',
             status:"CREATE",
             write_id:"dino"
+          }
+        },
+        mocks: {
+          $store: {
+            state: {
+              boardType: ['notice', 'used', 'share'],
+            }
           }
         }
       })

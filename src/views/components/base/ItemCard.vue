@@ -69,52 +69,38 @@ export default {
       let boardType = this.board.board_type;
       let boardStatus = this.board.status;
 
-      if(boardType !== 'used' && boardType !== 'share') {
+      if(!this.$store.state.boardType.includes(boardType)) {
         return 'error'
       }
 
-      let status = {
-        create : boardType === 'used' ? '판매중' : '나눔중',
-        close : boardType === 'used' ? '판매종료' : '나눔종료',
-        delete : '삭제됨'
+      let boardStatusEnum = {
+        CREATE : boardType === 'used' ? '판매중' : '나눔중',
+        CLOSE : boardType === 'used' ? '판매종료' : '나눔종료'
       }
 
-      switch(boardStatus) {
-      case 'CREATE':
-        return status.create;
-      case 'CLOSE': 
-        return status.close;
-      case 'DELETE':
-        return status.delete;
-      default:
-        return '';
-      }
+      return boardStatusEnum[boardStatus];
     },
     switchStatusColor() {
 
       let boardType = this.board.board_type;
       let boardStatus = this.board.status;
 
-      if(boardType !== 'used' && boardType !== 'share') {
+      if(!this.$store.state.boardType.includes(boardType)) {
         return 'error'
       }
 
-      switch(boardStatus) {
-      case 'CREATE':
-        return '#A5D6A7';
-      case 'CLOSE': 
-        return '#EF9A9A';
-      case 'DELETE':
-        return '#BDBDBD';
-      default:
-        return '';
-      } 
+      let boardStatusEnum = {
+        CREATE : '#A5D6A7',
+        CLOSE : '#EF9A9A',
+      }
+
+      return boardStatusEnum[boardStatus];
     },
     switchSubtitleByBoardType() {
 
       let boardType = this.board.board_type;
 
-      if(boardType !== 'used' && boardType !== 'share') {
+      if(!this.$store.state.boardType.includes(boardType)) {
         return 'error'
       }
 

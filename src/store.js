@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     barColor: 'rgba(30, 30, 30, .8), rgba(30, 30, 30, .8)',
     drawer: null,
+    boardType: ['notice', 'used', 'share'],
   },
   mutations: {
     SET_DRAWER (state, payload) {

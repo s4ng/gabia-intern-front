@@ -72,7 +72,7 @@ export default {
       img:'https://kr.vuejs.org/images/logo.png',
       title:'testItem',
       sell_price: 4500,
-      status:'CREATE',
+      status:'CLOSE',
       user_id:'dino'
     },
     {
@@ -81,7 +81,7 @@ export default {
       img:'https://kr.vuejs.org/images/logo.png',
       title:'testItem',
       sell_price: '50000',
-      status:'CREATE',
+      status:'CLOSE',
       user_id:'dino'
     }, 
     {
