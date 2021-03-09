@@ -66,8 +66,8 @@ export default {
   computed: {
     switchStatus() {
 
-      let boardType = this.board.board_type;
-      let boardStatus = this.board.status;
+      const boardType = this.board.board_type;
+      const boardStatus = this.board.status;
 
       if(!this.$store.state.boardType.includes(boardType)) {
         return 'error'
@@ -82,8 +82,8 @@ export default {
     },
     switchStatusColor() {
 
-      let boardType = this.board.board_type;
-      let boardStatus = this.board.status;
+      const boardType = this.board.board_type;
+      const boardStatus = this.board.status;
 
       if(!this.$store.state.boardType.includes(boardType)) {
         return 'error'
@@ -98,7 +98,7 @@ export default {
     },
     switchSubtitleByBoardType() {
 
-      let boardType = this.board.board_type;
+      const boardType = this.board.board_type;
 
       if(!this.$store.state.boardType.includes(boardType)) {
         return 'error'
