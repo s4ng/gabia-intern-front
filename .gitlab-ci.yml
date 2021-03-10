@@ -1,41 +1,18 @@
 stages:
-  - install
-  - lint
   - test
-  - build
   - deploy
 
 cache:
   paths:
     - node_modules/
 
-install_dependencies:
+test:
   image: node:lts
-  stage: install
+  stage: test
   script:
+    # lint 는 커밋 전에 수행하기로 결정함
     - npm install
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
-
-lint: 
-  image: node:lts
-  stage: lint
-  script:
-    - npm run lint
-
-# unit-test:
-#   image: node:lts
-#   stage: test
-#   script:
-#     - npm run test
-
-# e2e-test:
-# image: node:lts
-#   stage: test
-#   script:
-#     - npm run test:e2e
+    - npm run test
 
 # --- 아래 1.0.0 배포 후 설정 ---
 
