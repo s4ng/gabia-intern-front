@@ -1,7 +1,12 @@
 <template>
-    <v-card
-      max-width="460"
-      class="ma-3">
+  <v-card
+    max-width="460"
+    class="ma-3">
+    <router-link
+      style="text-decoration: none; color: inherit;"
+      :to="{name : '게시판',
+            params : {boardId : board.board_id},
+            query : {board: board.board_type.toLowerCase()}}">
       <v-row>
         <v-col cols="4">
           <div class="ml-3 mt-7">
@@ -47,14 +52,15 @@
                 <v-row
                   class="ma-auto subtitle-2"
                   justify="center"
-                  v-text="board.user_id">
+                  v-text="board.name">
                 </v-row>
               </v-card>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
-    </v-card>
+    </router-link>
+  </v-card>
 </template>
 
 <script>
@@ -69,13 +75,13 @@ export default {
       const boardType = this.board.board_type;
       const boardStatus = this.board.status;
 
-      if(!this.$store.state.boardType.includes(boardType)) {
+      if(!this.$store.state.boardType.includes(boardType.toLowerCase())) {
         return 'error'
       }
 
       let boardStatusEnum = {
-        CREATE : boardType === 'used' ? '판매중' : '나눔중',
-        CLOSE : boardType === 'used' ? '판매종료' : '나눔종료'
+        CREATED : boardType === 'USED' ? '판매중' : '나눔중',
+        CLOSE : boardType === 'USED' ? '판매종료' : '나눔종료'
       }
 
       return boardStatusEnum[boardStatus];
@@ -85,12 +91,12 @@ export default {
       const boardType = this.board.board_type;
       const boardStatus = this.board.status;
 
-      if(!this.$store.state.boardType.includes(boardType)) {
+      if(!this.$store.state.boardType.includes(boardType.toLowerCase())) {
         return 'error'
       }
 
       let boardStatusEnum = {
-        CREATE : '#A5D6A7',
+        CREATED : '#A5D6A7',
         CLOSE : '#EF9A9A',
       }
 
@@ -100,24 +106,27 @@ export default {
 
       const boardType = this.board.board_type;
 
-      if(!this.$store.state.boardType.includes(boardType)) {
+      if(!this.$store.state.boardType.includes(boardType.toLowerCase())) {
         return 'error'
       }
 
-      let result = boardType === 'used'
-        ? `${this.currencyFormatter(this.board.sell_price)}`
-        : `${this.dateFormatter(this.board.raffle_close_at)}`;
+      let result = boardType === 'USED' 
+        ? this.currencyFormatter(this.board.sell_price)
+        :this.dateFormatter(this.board.raffle_closed_at);
       
       return result;
     }
   },
   methods: {
-
     currencyFormatter(price) {
       return Intl.NumberFormat('ko-kR', {style: 'currency', currency: 'KRW'}).format(price);
     },
     dateFormatter(date) {
-      return `${date.replace(/\..+/, '')} 까지` // . 뒤의 문자 삭제.
+      if(date === null || date === '') {
+        return 'error';
+      }
+      
+      return this.$moment(date).format('YYYY-MM-DD HH:mm:ss 까지')
     }
   }
 }

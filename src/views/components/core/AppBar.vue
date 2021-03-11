@@ -29,6 +29,17 @@
     />
 
     <v-spacer />
+    
+    <v-icon>
+      mdi-brightness-4
+    </v-icon>
+
+    <v-switch
+      v-model="$vuetify.theme.dark"
+      class="mr-4 px-2"
+      color="secondary"
+      hide-details
+    />
 
     <v-text-field
       :label="$t('search')"
@@ -70,15 +81,20 @@
         >
           <v-badge
             color="red"
+            v-if="notifications.length !== 0"
             overlap
             bordered
           >
-            <template v-slot:badge>
+            <template 
+              v-if="notifications.length !== 0"
+              v-slot:badge>
               <span>{{notifications.length}}</span>
             </template>
 
             <v-icon>mdi-bell</v-icon>
           </v-badge>
+          <v-icon
+            v-if="notifications.length === 0">mdi-bell</v-icon>
         </v-btn>
       </template>
 
@@ -103,7 +119,12 @@
       text
       to="/profile"
     >
-      <v-icon>mdi-account</v-icon>
+      <v-icon
+        v-if="!$store.getters.isSignedIn">mdi-account</v-icon>
+      <v-text-field
+        v-else
+        v-text="$store.state.userName">
+      </v-text-field>
     </v-btn>
   </v-app-bar>
 </template>
@@ -152,9 +173,7 @@ export default {
   },
 
   data: () => ({
-    notifications: [
-      '알림 테스트입니다.',
-    ],
+    notifications: [],
   }),
 
   computed: {
