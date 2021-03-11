@@ -110,7 +110,7 @@ export default {
       {
         icon: 'mdi-account-group-outline',
         title: 'share board',
-        to: '/share',
+        to: '/present',
       },
       {
         icon: 'mdi-alert-circle',
