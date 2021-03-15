@@ -5,12 +5,13 @@
       <v-col
         cols="10"
         class="d-flex align-center">
-        <v-textarea
+        <v-text-field
           v-if="$store.state.userId !== ''"
           outlined
           v-model="comment"
+          @keyup.enter="saveComment"
           class="mt-5"
-          rows="2"></v-textarea>
+          rows="2"></v-text-field>
         <v-card-subtitle
           v-else>
           댓글을 남기려면 로그인 해주세요.
@@ -49,7 +50,7 @@ export default {
         this.$emit('reloadComments');
         this.comment = '';
       } catch(err) {
-        alert(`댓글 저장 실패\nerr: ${err}`);
+        alert(`댓글 저장 실패\n${err}`);
       }
     },
     saveComment() {

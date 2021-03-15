@@ -5,6 +5,8 @@
     <dashboard-core-drawer />
 
     <dashboard-core-view />
+
+    <dashboard-core-chatting />
   </v-app>
 </template>
 
@@ -16,6 +18,7 @@ export default {
     DashboardCoreAppBar: () => import('./components/core/AppBar'),
     DashboardCoreDrawer: () => import('./components/core/Drawer'),
     DashboardCoreView: () => import('./components/core/View'),
+    DashboardCoreChatting: () => import('./components/core/Chatting')
   },
 
   data: () => ({

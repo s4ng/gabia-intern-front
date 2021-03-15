@@ -90,6 +90,10 @@
           </v-text-field>
         </v-col>
       </v-row>
+      <v-container
+        v-if="boardType !== 'notice'">
+        <input class="mb-2" type="file"/>
+      </v-container>
       <v-text-field
         outlined
         label="제목을 입력해주세요."
@@ -154,11 +158,16 @@ export default {
       return BOARDTYPE[this.boardType];
     },
     priceSuggestionChecker() {
+      if(this.boardType !== 'USED') {
+        return;
+      }
+
       if(this.priceSuggestion !== '예' && this.priceSuggestion !== '아니오') {
         alert('가격 추천을 정확히 선택해주세요.')
       }
 
-      return this.priceSuggestion === '예' ? 1 : 0;
+      console.log(this.priceSuggestion === '예' ? 'true' : 'false')
+      return this.priceSuggestion === '예' ? true : false;
     },
     dateTimeFormatter() {
       return this.$moment(`${this.date}T${this.time}00`).format('YYYY-MM-DDTHH:mm:ss');
@@ -183,7 +192,7 @@ export default {
         //present
         present_goods_category: null,
         present_goods_status: null,
-        raffle_close_at: null,
+        raffle_closed_at: null,
 
         //used
         price_suggestion:null,
@@ -201,7 +210,7 @@ export default {
         boardData.raffle_closed_at = this.dateTimeFormatter;
       } else {
 
-        boardData.price_suggestion = this.priceSuggestionToBit;
+        boardData.price_suggestion = this.priceSuggestionChecker;
         boardData.sell_price = this.price;
         boardData.used_goods_category = this.detailBoardType;
         boardData.used_goods_status = this.itemStatus;
@@ -212,13 +221,14 @@ export default {
     async savePost() {
       const APIURL = process.env.VUE_APP_API_URL;
       const form = this.postForm(this.boardType);
+      console.log(this.priceSuggestion);
       console.log(form);
 
       try {
         await this.$axios.post(`${APIURL}/boards/${this.boardType}/posts`, form);
         this.redirect();
       } catch(err) {
-        alert(`글 쓰기 에러\nerr: ${err}`)
+        alert(`글 쓰기 에러\n${err}`)
       }
     },
     redirect() {

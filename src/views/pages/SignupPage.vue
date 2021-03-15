@@ -31,6 +31,7 @@
           v-model="nickName"
           outlined
           :rules="nickRules"
+          @keyup.enter="signUp"
           class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
         <v-container
           class="d-flex justify-end">

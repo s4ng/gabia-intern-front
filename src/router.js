@@ -75,7 +75,6 @@ const router =  new Router({
 
 router.beforeEach((to, from, next) => {
   if(to.meta.auth && !store.getters.isSignedIn) {
-    alert('로그인 해주세요.')
     next('/signin')
   } 
   if(to.meta.noNeedAuth && store.getters.isSignedIn) {

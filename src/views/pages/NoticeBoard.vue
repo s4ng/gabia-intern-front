@@ -33,23 +33,33 @@
             <v-col cols="7" v-text="board.title"></v-col>
             <v-col cols="1" v-text="board.name"></v-col>
             <v-col cols="2" v-text="dateFormatter(board.created_at)"></v-col>
-            <!-- <v-col cols="1" v-text="board.view_count"></v-col> -->
             <v-col cols="1">1</v-col>
           </v-row>
         </router-link>
       </v-card>
+      <v-divider class="my-3"/>
+      <v-pagination
+        v-model="page"
+        :length="pageLength"
+        :total-visible="10">
+      </v-pagination>
     </v-card>
   </v-container>
 </template>
 
 <script>
 export default {
-  props: {
-    page: null
-  },
   data: () => ({
+    page: 1,
+    pageLength: 1,
     boards: []
   }),
+  watch: {
+    page: function() {
+      this.getNoticeBoards();
+      this.$vuetify.goTo('#header');
+    }
+  },
   methods: {
     dateFormatter(date) {
       if(date === null || date === '') {
@@ -65,7 +75,8 @@ export default {
       
       try {
         const res = await this.$axios.get(`${APIURL}/boards/notice/posts?page=${pageNum}`);
-        this.boards = res.data.data;
+        this.boards = res.data.data.board_list;
+        this.pageLength = res.data.data.page_count
       } catch(err) {
         alert(`불러오기 실패\nerr: ${err}`)
       }

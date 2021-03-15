@@ -41,7 +41,9 @@
       hide-details
     />
 
-    <v-text-field
+    <base-alert-button></base-alert-button>
+    <!-- 전체 검색용 text field, 추후 개발 -->
+    <!-- <v-text-field
       :label="$t('search')"
       color="secondary"
       hide-details
@@ -62,56 +64,7 @@
       </template>
     </v-text-field>
 
-    <div class="mx-1" />
-
-    <v-menu
-      bottom
-      left
-      offset-y
-      origin="top right"
-      transition="scale-transition"
-    >
-      <template v-slot:activator="{ attrs, on }">
-        <v-btn
-          class="ml-2"
-          min-width="0"
-          text
-          v-bind="attrs"
-          v-on="on"
-        >
-          <v-badge
-            color="red"
-            v-if="notifications.length !== 0"
-            overlap
-            bordered
-          >
-            <template 
-              v-if="notifications.length !== 0"
-              v-slot:badge>
-              <span>{{notifications.length}}</span>
-            </template>
-
-            <v-icon>mdi-bell</v-icon>
-          </v-badge>
-          <v-icon
-            v-if="notifications.length === 0">mdi-bell</v-icon>
-        </v-btn>
-      </template>
-
-      <v-list
-        :tile="false"
-        nav
-      >
-        <div>
-          <app-bar-item
-            v-for="(n, i) in notifications"
-            :key="`item-${i}`"
-          >
-            <v-list-item-title v-text="n" />
-          </app-bar-item>
-        </div>
-      </v-list>
-    </v-menu>
+    <div class="mx-1" /> -->
 
     <v-btn
       class="ml-2"
@@ -131,7 +84,7 @@
 
 <script>
 // Components
-import { VHover, VListItem } from 'vuetify/lib'
+// import { VHover, VListItem } from 'vuetify/lib'
 
 // Utilities
 import { mapState, mapMutations } from 'vuex'
@@ -140,29 +93,29 @@ export default {
   name: 'DashboardCoreAppBar',
 
   components: {
-    AppBarItem: {
-      render (h) {
-        return h(VHover, {
-          scopedSlots: {
-            default: ({ hover }) => {
-              return h(VListItem, {
-                attrs: this.$attrs,
-                class: {
-                  'black--text': !hover,
-                  'white--text secondary elevation-12': hover,
-                },
-                props: {
-                  activeClass: '',
-                  dark: hover,
-                  link: true,
-                  ...this.$attrs,
-                },
-              }, this.$slots.default)
-            },
-          },
-        })
-      },
-    },
+    // AppBarItem: {
+    //   render (h) {
+    //     return h(VHover, {
+    //       scopedSlots: {
+    //         default: ({ hover }) => {
+    //           return h(VListItem, {
+    //             attrs: this.$attrs,
+    //             class: {
+    //               'black--text': !hover,
+    //               'white--text secondary elevation-12': hover,
+    //             },
+    //             props: {
+    //               activeClass: '',
+    //               dark: hover,
+    //               link: true,
+    //               ...this.$attrs,
+    //             },
+    //           }, this.$slots.default)
+    //         },
+    //       },
+    //     })
+    //   },
+    // },
   },
 
   props: {
@@ -172,9 +125,6 @@ export default {
     },
   },
 
-  data: () => ({
-    notifications: [],
-  }),
 
   computed: {
     ...mapState(['drawer']),

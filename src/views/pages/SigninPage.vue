@@ -16,6 +16,7 @@
         <v-text-field
           label="비밀번호"
           v-model="password"
+          @keyup.enter="signIn"
           :rules="pwRules"
           outlined
           class="mt-2 mb-2 mr-4 pr-2"
@@ -83,7 +84,7 @@ export default {
         await this.$store.dispatch('SIGNIN', { userId, password, userType });
         this.redirect();
       } catch({ message }) {
-        alert(`로그인 실패\nerr:${message}`);
+        alert(`로그인 실패\n${message}`);
       }
     },
     redirect() {
@@ -93,7 +94,8 @@ export default {
       this.$router.push('/signup');
     },
     hiworksSignin() {
-      alert('준비중')
+      const HIWORKSLOGIN = 'http://localhost:8081/users/oauth/login/hiworks';
+      window.open(HIWORKSLOGIN, 'Hiworks로 로그인', 'width=500, height=700');
     }
   }
 }

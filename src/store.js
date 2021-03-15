@@ -13,6 +13,7 @@ export default new Vuex.Store({
     userId: null,
     userType: '',
     userName: '',
+    isChattingListShow: false
     // password: null,
   },
   mutations: {
@@ -28,6 +29,9 @@ export default new Vuex.Store({
       state.userId = '';
       state.userName = '';
       state.userType = '';
+    },
+    CHATTINGLISTSHOW(state) {
+      state.isChattingListShow = !state.isChattingListShow;
     }
   },
   actions: {
@@ -53,10 +57,16 @@ export default new Vuex.Store({
     SIGNOUT({ commit }) {
       commit('SIGNOUT')
     },
+    CHATTINGLISTSHOW({ commit }) {
+      commit('CHATTINGLISTSHOW')
+    }
   },
   getters: {
     isSignedIn(state) {
       return state.userId !== '';
+    },
+    getIsChattingListShow(state) {
+      return state.chattingListShow
     }
   },
   plugins: [
