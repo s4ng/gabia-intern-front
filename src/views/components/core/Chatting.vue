@@ -3,44 +3,101 @@
     class="pa-0"
     style="background-color: #eee">
     <v-card
-      min-height="500"
-      min-width="350"
+      height="650"
+      min-width="370"
+      style="overflow-y:auto;"
       v-show="$store.state.isChattingListShow"
       id="chatting">
-      <v-container
-        class="d-flex flex-wrap">
-        <v-card-title
-          class="ma-2">채팅 목록</v-card-title>
-        <v-btn
-          class="ml-auto"
-          small
-          fab
-          @click="refreshChatList"
-          color="cyan">
-          <v-icon>
-            mdi-refresh
-          </v-icon>
-        </v-btn>
-      </v-container>
-      <!-- FIXME : 채팅 리스트용 카드 넣는 부분 -->
-      <v-card>
 
-      </v-card>
+      <base-chatting-room
+        v-if="isChatting"
+        v-on:go-to-chat-list="goToChatList"
+        :room="room">
+      </base-chatting-room>
+
+      <v-container
+        v-if="!isChatting">
+        <v-container
+          class="d-flex flex-wrap">
+          <v-card-title
+            class="ma-2">채팅 목록
+          </v-card-title>
+        </v-container>
+        <!-- FIXME : 채팅 리스트용 카드 넣는 부분 -->
+        
+          <v-card
+            class="px-1 py-4"
+            v-for="room in rooms"
+            :key="room.chat_room_id"
+            
+            @click="goToChatRoom(room)">
+            <v-badge color="red" overlap bordered v-if="yetCount(room) !== 0">
+              <template v-slot:badge>
+                <span>{{ yetCount(room) }}</span>
+              </template>
+              <v-card-text v-html="chatRoomNameSetter(room)"></v-card-text>
+            </v-badge> 
+            <v-card-text v-else v-html="chatRoomNameSetter(room)"></v-card-text>
+          </v-card>
+         
+      </v-container>
+      
     </v-card>
+    
     <v-btn
       id="chatButton"
       color="indigo"
       fab
       large
       @click="openChatList">
-      <v-icon>mdi-message-processing</v-icon>
+      <v-badge color="red" v-if="yetCountSum !== 0" overlap bordered>
+        <template v-slot:badge>
+          <span>{{ yetCountSum }}</span>
+        </template>
+
+        <v-icon>mdi-message-processing</v-icon>
+      </v-badge>
+      <v-icon v-else>mdi-message-processing</v-icon>
     </v-btn>
   </v-container>
 </template>
 
 <script>
+import Stomp from 'stomp-websocket';
+import SockJS from 'sockjs-client';
+
+let sock = new SockJS(`${process.env.VUE_APP_API_URL}/ws-stomp`);
+let ws = Stomp.over(sock);
+
 export default {
   name: 'DashboardCoreChatting',
+  data: () => ({
+    isChatting: false,
+    roomId: null,
+    roomName: '',
+    rooms: [],
+    room: {},
+    userId: null,
+  }),
+  created() {
+    this.userId = this.$store.state.userId;
+    console.log(ws);
+    this.stompStart();
+    console.log(ws);
+  },
+  computed: {
+    yetCountSum() {
+      let sum = 0;
+      this.rooms.forEach(e => {
+        if(e.seller_id === this.userId) {
+          sum += e.seller_count;
+        } else {
+          sum += e.buyer_count;
+        }
+      })
+      return sum;
+    },
+  },
   methods: {
     async openChatList() {
       try {
@@ -49,11 +106,44 @@ export default {
         alert(`채팅 리스트 조회 실패\n${err}`);
       }
     },
-    refreshChatList() {
-      this.getChatList();
+    goToChatRoom(room) {
+      this.isChatting = true;
+      this.room = room
     },
-    getChatList() {
-      console.log('FIXME : 채팅리스트 받아오는 로직구현')
+    goToChatList() {
+      this.isChatting = false;
+    },
+    getChatList(roomList) {
+      this.rooms = roomList;
+    },
+    alertCount() {
+      this.yetCount = this.notifications.filter(e => e.status==='YET').length;
+    },
+    stompStart() {
+      ws.connect(
+        {},
+        () => {
+          ws.subscribe('/sub/chat/user/'+this.userId, (reponse) => {
+            this.getChatList(JSON.parse(reponse.body));
+            console.log(JSON.parse(reponse.body));
+          });
+          ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
+        },
+        function (error) {
+          alert('error ' + error);
+        }
+      );
+    },
+    yetCount(chatRoom) {
+      if(chatRoom.seller_id === this.userId) {
+        return chatRoom.seller_count;
+      } else {
+        return chatRoom.buyer_count;
+      }
+    },
+    chatRoomNameSetter(room) {
+      let split = room.chat_room_name.split('/');
+      return split[2]+ '<br>' + split[0] + '&nbsp&nbsp&nbsp&nbsp' + split[1]; 
     }
   }
 }

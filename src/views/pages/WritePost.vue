@@ -92,7 +92,7 @@
       </v-row>
       <v-container
         v-if="boardType !== 'notice'">
-        <input class="mb-2" type="file"/>
+        <input class="mb-2" type="file" ref="file" accept="image/*"/>
       </v-container>
       <v-text-field
         outlined
@@ -131,6 +131,7 @@ export default {
     boardType: '',
     detailBoardType: '',
     itemStatus: '',
+    img: '',
     priceRules: [
       value => !!value || '필수 입력값입니다.',
       value => (value && value >= 1000) || '1000원 이상 입력해주세요.',
@@ -193,6 +194,7 @@ export default {
         present_goods_category: null,
         present_goods_status: null,
         raffle_closed_at: null,
+        img: '',
 
         //used
         price_suggestion:null,
@@ -219,6 +221,10 @@ export default {
       return boardData;
     },
     async savePost() {
+
+      if(this.$refs.file !== null) {
+        await this.saveImage();
+      }
       const APIURL = process.env.VUE_APP_API_URL;
       const form = this.postForm(this.boardType);
       console.log(this.priceSuggestion);
@@ -229,6 +235,18 @@ export default {
         this.redirect();
       } catch(err) {
         alert(`글 쓰기 에러\n${err}`)
+      }
+    },
+    async saveImage() {
+      let form = new FormData();
+      form.append('file', this.$refs.file)
+
+      const APIURL = process.env.VUE_APP_API_URL;
+
+      try {
+        this.img = await this.$axios.post(`${APIURL}/images`, form);
+      } catch(err) {
+        alert(`이미지 업로드 오류\n${err}`)
       }
     },
     redirect() {

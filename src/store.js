@@ -49,6 +49,7 @@ export default new Vuex.Store({
         .post(`${APIURL}/users/${userType.toLowerCase()}/login`, USERDATA)
         .then(res => {
           commit('SIGNIN', res.data)
+          window.location.reload();
         })
         .catch(err => {
           alert(`로그인에 실패했습니다.\n에러 : ${err}`)

@@ -51,6 +51,11 @@
                   color="#1976D2"
                   class="ma-auto">가격제시</v-btn>
                 <v-btn
+                  v-if="board.status === 'CLOSED'"
+                  color="gray"
+                  class="ma-auto">거래 완료</v-btn>
+                <v-btn
+                  v-else
                   color="#1976D2"
                   @click="chattingRequest"
                   class="ma-auto">채팅으로 거래하기</v-btn>
@@ -124,15 +129,27 @@ export default {
     }
   },
   methods: {
+    async createRoom() {
+      try {
+        await this.$axios.post(`${process.env.VUE_APP_API_URL}/chat/room/`, {
+          board_id: this.board.board_id,
+          user_id: this.$store.state.userId, 
+          seller_id: this.board.user_id
+        }) 
+      } catch (error) {
+        alert(error);
+      }
+    },
     async chattingRequest() {
       if(confirm('거래를 신청할까요?')) {
         try {
-          if(!this.$store.state.isChattingListShow) {
+          if(!this.$store.state.isChattingListShow) { 
             await this.$store.dispatch('CHATTINGLISTSHOW');
           }
         } catch(err) {
           alert(`채팅 리스트 조회 실패\nerr:${err}`);
         }
+        this.createRoom();
       }
     },
     dateFormatter(date) {

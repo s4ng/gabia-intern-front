@@ -81,7 +81,7 @@ export default {
 
       let boardStatusEnum = {
         CREATED : boardType === 'USED' ? '판매중' : '나눔중',
-        CLOSE : boardType === 'USED' ? '판매종료' : '나눔종료'
+        CLOSED : boardType === 'USED' ? '판매종료' : '나눔종료'
       }
 
       return boardStatusEnum[boardStatus];
@@ -97,7 +97,7 @@ export default {
 
       let boardStatusEnum = {
         CREATED : '#A5D6A7',
-        CLOSE : '#EF9A9A',
+        CLOSED : '#EF9A9A',
       }
 
       return boardStatusEnum[boardStatus];

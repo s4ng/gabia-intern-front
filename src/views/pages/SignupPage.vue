@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     async signUpRequest(userData) {
-      const APIURL = `${process.env.VUE_APP_API_URL}/users/${userData.user_type.toLowerCase()}`;
+      const APIURL = `${process.env.VUE_APP_API_URL}/users`;
 
       try {
         await this.$axios.post(APIURL, userData)
@@ -95,7 +95,6 @@ export default {
 
       // FIXME : userType 하드코드 추후 수정
       const userData = {
-        user_type: 'MANAGER',
         gabia_id: this.userId,
         name: this.nickName,
         password: this.password
