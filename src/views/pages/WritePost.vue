@@ -118,7 +118,7 @@
           cols="3"
           v-if="boardType === 'present'">
           <v-menu
-            ref="menu"
+            ref="menu2"
             v-model="menu2"
             :close-on-content-click="false"
             :nudge-right="40"
@@ -143,7 +143,7 @@
               v-if="menu2"
               v-model="time"
               full-width
-              @click:minute="$refs.menu.save(time)"
+              @click:minute="$refs.menu2.save(time)"
             ></v-time-picker>
           </v-menu>
         </v-col>
@@ -190,8 +190,8 @@ export default {
     description: '',
     priceSuggestion: '',
     price: 1000,
-    date: '',
-    time: '',
+    date: null,
+    time: null,
     boardType: '',
     detailBoardType: '',
     itemStatus: '',
@@ -231,7 +231,7 @@ export default {
       return this.priceSuggestion === '예' ? true : false;
     },
     dateTimeFormatter() {
-      return this.$moment(`${this.date}T${this.time}00`).format('YYYY-MM-DDTHH:mm:ss');
+      return this.$moment(`${this.date}T${this.time}:00`).format('YYYY-MM-DDTHH:mm:ss');
     },
   },
   methods: {
@@ -286,20 +286,18 @@ export default {
       return boardData;
     },
     async savePost() {
+      if(this.imgFile !== undefined) {
+        await this.saveImage();
+      }
+      const APIURL = process.env.VUE_APP_API_URL;
+      const form = this.postForm(this.boardType);
 
-      console.log(this.date + ' ' + this.time)
-      // if(this.imgFile !== undefined) {
-      //   await this.saveImage();
-      // }
-      // const APIURL = process.env.VUE_APP_API_URL;
-      // const form = this.postForm(this.boardType);
-
-      // try {
-      //   await this.$axios.post(`${APIURL}/boards/${this.boardType}/posts`, form);
-      //   this.redirect();
-      // } catch(err) {
-      //   alert(`글 쓰기 에러\n${err}`)
-      // }
+      try {
+        await this.$axios.post(`${APIURL}/boards/${this.boardType}/posts`, form);
+        this.redirect();
+      } catch(err) {
+        alert(`글 쓰기 에러\n${err}`)
+      }
     },
     async saveImage() {
       let form = new FormData();

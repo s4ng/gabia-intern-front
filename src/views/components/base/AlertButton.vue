@@ -13,7 +13,7 @@
       </v-btn>
     </template>
 
-    <v-list width="300" max-height="500" :tile="false" nav>
+    <v-list max-height="500" :tile="false" nav>
       <div>
         <v-container
           v-for="(n, i) in notifications"

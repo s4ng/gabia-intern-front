@@ -20,7 +20,14 @@ describe('PostPage.vue', () => {
     wrapper = shallowMount(PostPage, {
       localVue,
       vuetify: new Vuetify(),
-      router
+      router,
+      mocks: {
+        $store: {
+          state: {
+            userId : 1
+          }
+        }
+      }
     });
   })
 
