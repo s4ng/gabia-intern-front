@@ -112,18 +112,10 @@ export default {
       this.yetCount = this.notifications.filter(e => e.status==='YET').length;
     },
     stompStart() {
-      this.$ws.connect(
-        {},
-        () => {
-          this.$ws.subscribe('/sub/chat/user/'+this.userId, (reponse) => {
-            this.getChatList(JSON.parse(reponse.body));
-          });
-          this.$ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
-        },
-        function (error) {
-          alert('error ' + error);
-        }
-      );
+      this.$ws.subscribe('/sub/chat/user/'+this.userId, (reponse) => {
+        this.getChatList(JSON.parse(reponse.body));
+      });
+      this.$ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
     },
     yetCount(chatRoom) {
       if(chatRoom.seller_id === this.userId) {

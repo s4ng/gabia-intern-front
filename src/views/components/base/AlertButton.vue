@@ -47,18 +47,10 @@ export default {
       this.yetCount = this.notifications.filter(e => e.status==='YET').length;
     },
     stompStart() {
-      this.$ws.connect(
-        {},
-        () => {
-          this.$ws.subscribe('/sub/alert/'+this.userId, (reponse) => {
-            this.getAlert(JSON.parse(reponse.body))
-          });
-          this.$ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'YET'}));
-        },
-        function (error) {
-          alert('error ' + error);
-        }
-      );
+      this.$ws.subscribe('/sub/alert/'+this.userId, (reponse) => {
+        this.getAlert(JSON.parse(reponse.body))
+      });
+      this.$ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'YET'}));
     },
     getAlert(alerts) {
       if(Array.isArray(alerts)) {

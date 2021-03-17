@@ -86,7 +86,7 @@ export default {
     chatting: []
   }),
   created() {
-    this.$ws.connect();
+    // this.$ws.connect();
     this.userId = this.$store.state.userId;
     this.stompStart();
   },
