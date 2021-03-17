@@ -63,12 +63,6 @@
 </template>
 
 <script>
-import Stomp from 'stomp-websocket';
-import SockJS from 'sockjs-client';
-
-let sock = new SockJS(`${process.env.VUE_APP_API_URL}/ws-stomp`);
-let ws = Stomp.over(sock);
-
 export default {
   name: 'DashboardCoreChatting',
   data: () => ({
@@ -81,9 +75,7 @@ export default {
   }),
   created() {
     this.userId = this.$store.state.userId;
-    console.log(ws);
     this.stompStart();
-    console.log(ws);
   },
   computed: {
     yetCountSum() {
@@ -120,14 +112,13 @@ export default {
       this.yetCount = this.notifications.filter(e => e.status==='YET').length;
     },
     stompStart() {
-      ws.connect(
+      this.$ws.connect(
         {},
         () => {
-          ws.subscribe('/sub/chat/user/'+this.userId, (reponse) => {
+          this.$ws.subscribe('/sub/chat/user/'+this.userId, (reponse) => {
             this.getChatList(JSON.parse(reponse.body));
-            console.log(JSON.parse(reponse.body));
           });
-          ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
+          this.$ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
         },
         function (error) {
           alert('error ' + error);
@@ -142,7 +133,11 @@ export default {
       }
     },
     chatRoomNameSetter(room) {
-      let split = room.chat_room_name.split('/');
+      let roomName = room.chat_room_name;
+      if(roomName === '' || roomName === undefined) {
+        return 'err'
+      }
+      let split = roomName.split('/');
       return split[2]+ '<br>' + split[0] + '&nbsp&nbsp&nbsp&nbsp' + split[1]; 
     }
   }

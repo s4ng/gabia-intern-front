@@ -16,7 +16,7 @@ import SockJs from 'sockjs-client'
 let sock = new SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
 let ws = Stomp.over(sock);
 
-Vue.use(ws);
+Vue.prototype.$ws = ws;
 
 Vue.config.productionTip = false
 

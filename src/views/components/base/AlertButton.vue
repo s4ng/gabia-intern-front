@@ -27,12 +27,6 @@
 </template>
 
 <script>
-import Stomp from 'stomp-websocket';
-import SockJS from 'sockjs-client';
-
-let sock = new SockJS(`${process.env.VUE_APP_API_URL}/ws-stomp`);
-let ws = Stomp.over(sock);
-
 export default {
   data: () => ({
     notifications: [],
@@ -53,13 +47,13 @@ export default {
       this.yetCount = this.notifications.filter(e => e.status==='YET').length;
     },
     stompStart() {
-      ws.connect(
+      this.$ws.connect(
         {},
         () => {
-          ws.subscribe('/sub/alert/'+this.userId, (reponse) => {
+          this.$ws.subscribe('/sub/alert/'+this.userId, (reponse) => {
             this.getAlert(JSON.parse(reponse.body))
           });
-          ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'YET'}));
+          this.$ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'YET'}));
         },
         function (error) {
           alert('error ' + error);
@@ -74,7 +68,7 @@ export default {
       this.notifications.unshift(alerts);
     },
     updateAlert() {
-      ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'READ'}));
+      this.$ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'READ'}));
       this.alertCount();
     }
   },
