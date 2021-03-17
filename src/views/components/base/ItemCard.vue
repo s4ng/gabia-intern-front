@@ -11,10 +11,9 @@
         <v-col cols="4">
           <div class="ml-3 mt-7">
             <v-img
-              lazy-src="http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif"
-              max-height="200"
-              max-width="200"
-              v-bind:src="board.img"></v-img>
+              height="150"
+              width="150"
+              :src="imgUrlSetter"></v-img>
           </div>
         </v-col>
         <v-col cols="8">
@@ -70,6 +69,12 @@ export default {
   },
   //['type', 'img', 'title', 'price', 'deadline', 'status', 'seller'],
   computed: {
+    imgUrlSetter() {
+      if(this.board.img === '' || this.board.img === undefined) {
+        return 'http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif'
+      }
+      return `${process.env.VUE_APP_API_URL}/images/${this.board.img}`
+    },
     switchStatus() {
 
       const boardType = this.board.board_type;
@@ -81,6 +86,7 @@ export default {
 
       let boardStatusEnum = {
         CREATED : boardType === 'USED' ? '판매중' : '나눔중',
+        MODIFIED: boardType === 'USED' ? '판매중' : '나눔중',
         CLOSED : boardType === 'USED' ? '판매종료' : '나눔종료'
       }
 
@@ -97,6 +103,7 @@ export default {
 
       let boardStatusEnum = {
         CREATED : '#A5D6A7',
+        MODIFIED : '#A5D6A7',
         CLOSED : '#EF9A9A',
       }
 

@@ -3,6 +3,12 @@
     <v-card
       class="mx-auto my-6"
       max-width="1000">
+      <v-card
+        v-if="board.user_id === userId"
+        width="90"
+        @click="removePost"
+        style="color : #B71C1C"
+        class="pa-2 ml-auto">글 삭제하기</v-card>
       <v-container>
         <v-row
           class="px-5">
@@ -10,7 +16,9 @@
             v-if="board.board_type !== 'NOTICE'"
             cols="4">
             <v-img
-              lazy-src="http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif"></v-img>
+              height="300"
+              width="300"
+              :src="imgUrlSetter"></v-img>
           </v-col>
           <v-col
             cols="8">
@@ -46,19 +54,31 @@
                 class="d-flex flex-wrap">
                 <v-card-subtitle>가격제시 : </v-card-subtitle>
                 <v-card-subtitle v-text="priceSuggestionFormatter"/>
-                <v-btn
-                  v-if="board.price_suggestion"
-                  color="#1976D2"
-                  class="ma-auto">가격제시</v-btn>
+                <div v-if="board.price_suggestion">
+                  <v-btn
+                    v-if="board.user_id === userId"
+                    color="gray"
+                    class="ma-6">가격제시</v-btn>
+                  <v-btn
+                    v-else
+                    color="#1976D2"
+                    class="ma-6">가격제시</v-btn>
+                </div>
                 <v-btn
                   v-if="board.status === 'CLOSED'"
                   color="gray"
-                  class="ma-auto">거래 완료</v-btn>
-                <v-btn
-                  v-else
-                  color="#1976D2"
-                  @click="chattingRequest"
-                  class="ma-auto">채팅으로 거래하기</v-btn>
+                  class="ma-6">거래 완료</v-btn>
+                <div v-else>
+                  <v-btn
+                    v-if="board.user_id === userId"
+                    color="gray"
+                    class="ma-6">채팅으로 거래하기</v-btn>
+                  <v-btn
+                    v-else
+                    color="#1976D2"
+                    @click="chattingRequest"
+                    class="ma-6">채팅으로 거래하기</v-btn>
+                </div>
               </v-container>
               <v-container
                 v-if="board.board_type === 'PRESENT'"
@@ -104,6 +124,7 @@ export default {
     boardId: null,
   },
   data: () => ({
+    userId : '',
     board: {
       board_type: '',
       description: '',
@@ -114,6 +135,9 @@ export default {
     isJoinedRaffle: false,
     raffleParticipants : 50,
   }),
+  created() {
+    this.userId = this.$store.state.userId;
+  },
   computed: {
     descriptionFormatter() {
       return this.board.description.replace(/\n/g, '<br/>');
@@ -126,6 +150,12 @@ export default {
     },
     raffleParticipantsToText() {
       return this.raffleParticipants + ' 명';
+    },
+    imgUrlSetter() {
+      if(this.board.img === '' || this.board.img === undefined) {
+        return 'http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif'
+      }
+      return `${process.env.VUE_APP_API_URL}/images/${this.board.img}`
     }
   },
   methods: {
@@ -160,17 +190,6 @@ export default {
       return this.$moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
     async getPost() {
-      // FIXME : 재택 인터넷 이슈 / 아래 코드로 교체
-      // this.board = {
-      //   board_id: 1,
-      //   board_type: 'PRESENT',
-      //   name: 'DINO',
-      //   title: 'test',
-      //   description: 'test',
-      //   raffle_closed_at: '2021-03-14T17:30:00',
-      //   created_at: '2021-03-12T18:40:30',
-
-      // }
       const APIURL = `${process.env.VUE_APP_API_URL}/boards/${this.$route.query.board}`;
 
       try {
@@ -218,7 +237,19 @@ export default {
         return;
       }
       this.isJoinedRaffle = false;
-    }
+    },
+    async removePost() {
+      if(confirm('게시물을 삭제하시겠습니까?')) {
+        const APIURL = process.env.VUE_APP_API_URL;
+
+        try {
+          this.$axios.delete(`${APIURL}/boards/${this.board.board_type.toLowerCase()}/posts/${this.board.board_id}?userId=${this.userId}`)
+          this.$router.push(`/${this.board.board_type}`)
+        } catch(err) {
+          alert(`게시물 삭제에 실패했습니다.\n${err}`)
+        }
+      }
+    },
   },
   async mounted() {
     await this.getPost();
