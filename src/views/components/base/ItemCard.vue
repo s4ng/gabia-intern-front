@@ -71,7 +71,7 @@ export default {
   computed: {
     imgUrlSetter() {
       if(this.board.img === '' || this.board.img === undefined) {
-        return 'http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif'
+        return this.$noImageUrl
       }
       return `${process.env.VUE_APP_API_URL}/images/${this.board.img}`
     },
@@ -88,6 +88,15 @@ export default {
         CREATED : boardType === 'USED' ? '판매중' : '나눔중',
         MODIFIED: boardType === 'USED' ? '판매중' : '나눔중',
         CLOSED : boardType === 'USED' ? '판매종료' : '나눔종료'
+      }
+
+      if(boardType === 'PRESENT') {
+        let raffleClose = this.$moment(this.board.raffle_closed_at);
+        let now = this.$moment()
+
+        if(raffleClose.diff(now, 'second') <= 0) {
+          boardStatusEnum.CREATED = '나눔종료'
+        }
       }
 
       return boardStatusEnum[boardStatus];
@@ -107,6 +116,14 @@ export default {
         CLOSED : '#EF9A9A',
       }
 
+      if(boardType === 'PRESENT') {
+        let raffleClose = this.$moment(this.board.raffle_closed_at);
+        let now = this.$moment()
+
+        if(raffleClose.diff(now, 'second') <= 0) {
+          boardStatusEnum.CREATED = '#EF9A9A'
+        }
+      }
       return boardStatusEnum[boardStatus];
     },
     switchSubtitleByBoardType() {

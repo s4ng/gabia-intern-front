@@ -7,6 +7,7 @@
         v-if="$store.state.userType === 'MANAGER'"
         class="d-flex justify-end ma-4">
         <base-write-post-button
+          v-if="$store.state.userType === 'MANAGER'"
           fromBoard="notice">
         </base-write-post-button>
       </v-container>
@@ -83,6 +84,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$store.state.userName + ' ' + this.$store.state.userType)
     this.getNoticeBoards();
   }
 }

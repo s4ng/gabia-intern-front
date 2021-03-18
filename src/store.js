@@ -35,20 +35,20 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    SIGNIN({ commit }, { userId, password, userType }) {
+    SIGNIN({ commit }, { userId, password }) {
 
       const APIURL = process.env.VUE_APP_API_URL;
 
       const USERDATA = {
-        user_type: userType,
         gabia_id: userId,
         password: password
       }
 
       return axios
-        .post(`${APIURL}/users/${userType.toLowerCase()}/login`, USERDATA)
+        .post(`${APIURL}/users/login`, USERDATA)
         .then(res => {
           commit('SIGNIN', res.data)
+          console.log(res.data)
           window.location.reload();
         })
         .catch(err => {

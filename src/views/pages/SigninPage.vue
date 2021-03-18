@@ -76,12 +76,11 @@ export default {
   methods: {
     async signIn() {
       // 하드코딩 수정
-      let userType = 'MANAGER';
       let userId = this.userId;
       let password = this.password;
 
       try {
-        await this.$store.dispatch('SIGNIN', { userId, password, userType });
+        await this.$store.dispatch('SIGNIN', { userId, password });
         this.redirect();
       } catch({ message }) {
         alert(`로그인 실패\n${message}`);

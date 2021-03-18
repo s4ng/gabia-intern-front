@@ -15,6 +15,8 @@ import SockJs from 'sockjs-client'
 Vue.prototype.$Stomp = Stomp;
 Vue.prototype.$SockJs = SockJs;
 
+Vue.prototype.$noImageUrl = 'http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif'
+
 Vue.config.productionTip = false
 
 // 시간 차이 초 단위 표시

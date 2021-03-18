@@ -129,19 +129,23 @@
         </tbody>
       </v-simple-table>
     </v-card>
-    <v-container
-      class="d-flex flex-wrap">
-      <base-item-card
-        v-for="item in usedItems"
-        :key="item.id"
-        :board="item"/>
-    </v-container>
-    <v-divider class="my-1"/>
-    <v-pagination
-      v-model="page"
-      :length="pageLength"
-      :total-visible="10">
-    </v-pagination>
+    <v-card
+      max-width="1000"
+      class="mx-auto py-2">
+      <v-container
+        class="d-flex flex-wrap">
+        <base-item-card
+          v-for="item in usedItems"
+          :key="item.id"
+          :board="item"/>
+      </v-container>
+      <v-divider class="my-1"/>
+      <v-pagination
+        v-model="page"
+        :length="pageLength"
+        :total-visible="10">
+      </v-pagination>
+    </v-card>
   </v-container>
 </template>
 

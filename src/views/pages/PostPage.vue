@@ -36,16 +36,20 @@
                 style="font-size: 20px;"
                 v-if="board.board_type === 'USED'"
                 v-text="currencyFormatter"/>
-              <v-btn
-                v-if="board.board_type === 'PRESENT' && isJoinedRaffle === false"
-                color="#1976D2"
-                @click="joinRaffle"
-                class="ma-auto">나눔받기 참여</v-btn>
-              <v-btn
-                v-if="board.board_type === 'PRESENT' && isJoinedRaffle === true"
-                color="#EC407A"
-                @click="cancelRaffle"
-                class="ma-auto">나눔받기 취소</v-btn>
+              <div
+                class="ma-auto"
+                v-if="!isRaffleClose && userId !== board.user_id">
+                <v-btn
+                  v-if="board.board_type === 'PRESENT' && isJoinedRaffle === false"
+                  color="#1976D2"
+                  @click="joinRaffle"
+                  class="ma-auto">나눔받기 참여</v-btn>
+                <v-btn
+                  v-if="board.board_type === 'PRESENT' && isJoinedRaffle === true"
+                  color="#EC407A"
+                  @click="cancelRaffle"
+                  class="ma-auto">나눔받기 취소</v-btn>
+              </div>
             </v-container>
             <v-row
               class="pl-2">
@@ -56,11 +60,7 @@
                 <v-card-subtitle v-text="priceSuggestionFormatter"/>
                 <div v-if="board.price_suggestion">
                   <v-btn
-                    v-if="board.user_id === userId"
-                    color="gray"
-                    class="ma-6">가격제시</v-btn>
-                  <v-btn
-                    v-else
+                    v-if="board.user_id !== userId"
                     color="#1976D2"
                     class="ma-6">가격제시</v-btn>
                 </div>
@@ -70,11 +70,7 @@
                   class="ma-6">거래 완료</v-btn>
                 <div v-else>
                   <v-btn
-                    v-if="board.user_id === userId"
-                    color="gray"
-                    class="ma-6">채팅으로 거래하기</v-btn>
-                  <v-btn
-                    v-else
+                    v-if="board.user_id !== userId"
                     color="#1976D2"
                     @click="chattingRequest"
                     class="ma-6">채팅으로 거래하기</v-btn>
@@ -152,7 +148,7 @@ export default {
     },
     imgUrlSetter() {
       if(this.board.img === '' || this.board.img === undefined) {
-        return 'http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif'
+        return this.$noImageUrl
       }
       return `${process.env.VUE_APP_API_URL}/images/${this.board.img}`
     },
@@ -164,6 +160,12 @@ export default {
         }
       });
       return checkResult;
+    },
+    isRaffleClose() {
+      if(this.leftTime === '끝났음') {
+        return true;
+      }
+      return false;
     }
   },
   methods: {

@@ -20,6 +20,7 @@
           :key="`item-${i}`">
           <v-list-item-title
             v-text="n.message" />
+          <v-divider></v-divider>
         </v-container>
       </div>
     </v-list>

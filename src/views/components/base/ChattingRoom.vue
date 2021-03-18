@@ -27,7 +27,7 @@
           <v-card
             max-width="250"
             class="pa-3 mr-2 d-inline-flex"
-            :class="item.user_id === userId && 'ml-auto'"
+            :class="item.user_id === userId && 'ml-auto yellow lighten-4'"
             v-if="item.message !== ''"
             v-text="item.message">
           </v-card>

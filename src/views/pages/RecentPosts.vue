@@ -1,29 +1,34 @@
 <template>
   <v-container>
-    <v-row
+    <v-card
       max-width="1000"
-      class="ma-auto">
-      <h2 data-test="recent-used-title" class="ma-1 ml-5">최근 중고게시물</h2>
-    </v-row>
-    <v-container
-      class="d-flex flex-wrap">
-      <base-item-card
-        v-for="item in usedItems"
-        :key="item.id"
-        :board="item"/>
-    </v-container>
-    <v-row
-      max-width="1000"
-      class="ma-auto">
-      <h2 data-test="recent-share-title" class="ma-1 ml-5">최근 나눔게시물</h2>
-    </v-row>
-    <v-container
-      class="d-flex flex-wrap">
-      <base-item-card
-        v-for="item in shareItems"
-        :key="item.id"
-        :board="item"/>
-    </v-container>
+      class="mx-auto py-6">
+      <v-row
+        max-width="1000"
+        class="ma-auto">
+        <h2 data-test="recent-used-title" class="ma-1 ml-5">최근 중고게시물</h2>
+      </v-row>
+      
+      <v-container
+        class="d-flex flex-wrap">
+        <base-item-card
+          v-for="item in usedItems"
+          :key="item.id"
+          :board="item"/>
+      </v-container>
+      <v-row
+        max-width="1000"
+        class="ma-auto">
+        <h2 data-test="recent-share-title" class="ma-1 ml-5">최근 나눔게시물</h2>
+      </v-row>
+      <v-container
+        class="d-flex flex-wrap">
+        <base-item-card
+          v-for="item in shareItems"
+          :key="item.id"
+          :board="item"/>
+      </v-container>
+    </v-card>
   </v-container>
 </template>
 
