@@ -77,22 +77,19 @@
 </template>
 
 <script>
-import Stomp from 'stomp-websocket'
-import SockJs from 'sockjs-client'
-
-// 웹 소켓 설정
-let sock = new SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
-let ws = Stomp.over(sock);
-
 export default {
   props: ['room'],
   data: () => ({
     userId: null,
     message: '',
-    chatting: []
+    chatting: [],
+    ws: undefined,
   }),
   created() {
-    ws.connect();
+    // 웹 소켓 설정
+    let sock = new this.$SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
+    this.ws = this.$Stomp.over(sock);
+
     this.userId = this.$store.state.userId;
     this.stompStart();
   },
@@ -101,25 +98,30 @@ export default {
       this.$emit('go-to-chat-list');
     },
     sendMessage() {
-      ws.send('/pub/chat/room', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'TALK', chat_room_id: this.room.chat_room_id }));
+      this.ws.send('/pub/chat/room', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'TALK', chat_room_id: this.room.chat_room_id }));
       this.message = '';
     },
     stompStart() {
-      ws.subscribe('/sub/chat/room/'+this.room.chat_room_id, (reponse) => {
-        this.chatting = JSON.parse(reponse.body);
-      });
-      ws.send('/pub/chat/room/start', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'ENTER', chat_room_id: this.room.chat_room_id }));
+      this.ws.connect(
+        {},
+        () => {
+          this.ws.subscribe('/sub/chat/room/'+this.room.chat_room_id, (reponse) => {
+            this.chatting = JSON.parse(reponse.body);
+          });
+          this.ws.send('/pub/chat/room/start', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'ENTER', chat_room_id: this.room.chat_room_id }));
+        }
+      )
     },
     leaveChat() {
       if(confirm('채팅방을 나가시겠습니까?')) {
         this.goToChatList();
-        ws.send('/pub/chat/room/leave', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'LEAVE', chat_room_id: this.room.chat_room_id }));
+        this.ws.send('/pub/chat/room/leave', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'LEAVE', chat_room_id: this.room.chat_room_id }));
       }
     },
     completeDeal() {
       if(confirm('거래가 완료되었습니까?')) {
         this.goToChatList();
-        ws.send('/pub/chat/room/close', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'CLOSE', chat_room_id: this.room.chat_room_id }));
+        this.ws.send('/pub/chat/room/close', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'CLOSE', chat_room_id: this.room.chat_room_id }));
       }
     }
   },

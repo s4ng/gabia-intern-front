@@ -9,6 +9,11 @@ import i18n from './i18n'
 import VueAxios from './plugins/axios'
 import VueMoment from 'vue-moment'
 import moment from 'moment-timezone'
+import Stomp from 'stomp-websocket'
+import SockJs from 'sockjs-client'
+
+Vue.prototype.$Stomp = Stomp;
+Vue.prototype.$SockJs = SockJs;
 
 Vue.config.productionTip = false
 

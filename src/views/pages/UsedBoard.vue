@@ -6,6 +6,117 @@
         fromBoard="used">
       </base-write-post-button>
     </v-container>
+    <v-card
+      class="mx-auto"
+      max-width="1000">
+      <v-simple-table>
+        <tbody>
+          <tr>
+            <td>판매상태</td>
+            <td>
+              <v-checkbox
+                v-model="usedStatusCreated">
+                 <span slot="label" class="black--text">판매중</span>
+              </v-checkbox>
+            </td>
+            <td>
+              <v-checkbox
+                v-model="usedStatusClosed">
+                 <span slot="label" class="black--text">판매종료</span>
+              </v-checkbox>
+            </td>
+          </tr>
+          <tr>
+            <td>상품상태</td>
+            <td>
+              <v-checkbox
+                v-model="itemStatusNew">
+                 <span slot="label" class="black--text">새 것</span>
+              </v-checkbox>
+            </td>
+            <td>
+              <v-checkbox
+                v-model="itemStatusUsed">
+                 <span slot="label" class="black--text">사용감 있음</span>
+              </v-checkbox>
+            </td>
+          </tr>
+          <tr>
+            <td>가격대 설정</td>
+            <td
+              colspan="2">
+              <v-range-slider
+                v-model="range"
+                :max="max"
+                :min="min"
+                hide-details
+                step="1000"
+                class="align-center"
+              >
+                <template v-slot:prepend>
+                  <v-text-field
+                    :value="range[0]"
+                    class="mt-0 pt-0"
+                    hide-details
+                    single-line
+                    style="width: 60px"
+                    @change="$set(range, 0, $event)"
+                  ></v-text-field>
+                </template>
+                <template v-slot:append>
+                  <v-text-field
+                    :value="range[1]"
+                    class="mt-0 pt-0"
+                    hide-details
+                    single-line
+                    style="width: 60px"
+                    @change="$set(range, 1, $event)"
+                  ></v-text-field>
+                </template>
+              </v-range-slider>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              정렬
+            </td>
+            <td
+              colspan="2">
+              <div
+                class="pl-10">
+                <v-radio-group
+                  v-model="sort"
+                  row>
+                  <v-radio
+                    value="time">
+                    <span slot="label" class="black--text">최신 순</span>
+                  </v-radio>
+                  <v-radio
+                    value="lowPrice">
+                    <span slot="label" class="black--text">낮은 가격 순</span>
+                  </v-radio>
+                  <v-radio
+                    value="highPrice">
+                    <span slot="label" class="black--text">높은 가격 순</span>
+                  </v-radio>
+                </v-radio-group>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td
+              colspan="3">
+              <v-btn
+                class="ma-3 mx-6"
+                color="indigo"
+                @click="initSearch">
+                초기화
+              </v-btn>
+            </td>
+          </tr>
+        </tbody>
+      </v-simple-table>
+    </v-card>
     <v-container
       class="d-flex flex-wrap">
       <base-item-card
@@ -28,12 +139,43 @@ export default {
     page: 1,
     pageLength: 1,
     usedItems: [],
+    min: 1000,
+    max: 200000,
+    range: [1000, 200000],
+    sort: 'time',
+    usedStatusCreated: false,
+    usedStatusClosed: false,
+    itemStatusNew: false,
+    itemStatusUsed: false,
   }),
-  watch: {
-    page: function() {
-      this.getUsedBoard();
-      this.$vuetify.goTo('#header');
+  computed:{
+    searchChangeChecker() {
+      // computed에서 각 변수에 담긴 값을 확인하고 어떤 값이든지 변경사항이 생길경우 리턴함.
+      const {
+        page,
+        range,
+        sort,
+        usedStatusCreated,
+        usedStatusClosed,
+        itemStatusNew,
+        itemStatusUsed
+      } = this
+
+      return {
+        page,
+        range,
+        sort,
+        usedStatusCreated,
+        usedStatusClosed,
+        itemStatusNew,
+        itemStatusUsed
+      }
     }
+  },
+  watch: {
+    searchChangeChecker() {
+      this.getUsedBoard();
+    },
   },
   methods: {
     async getUsedBoard() {
@@ -46,6 +188,14 @@ export default {
       } catch(err) {
         alert(`중고 게시판 조회 오류\n${err}`);
       }
+    },
+    initSearch() {
+      this.sort = 'time';
+      this.usedStatusCreated= false;
+      this.usedStatusClosed= false;
+      this.itemStatusNew= false;
+      this.itemStatusUsed= false;
+      this.range = [1000, 200000];
     }
   },
   mounted() {
@@ -53,7 +203,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

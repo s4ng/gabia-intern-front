@@ -33,7 +33,7 @@
             @click="signIn">로그인</v-btn>
         </v-container>
       </v-container>
-      <v-divider></v-divider>
+      <!-- <v-divider></v-divider>
       <v-card
         @click="hiworksSignin"
         class="mx-16">
@@ -54,7 +54,7 @@
             <h1>로그인</h1>
           </v-col>
         </v-row>
-      </v-card>
+      </v-card> -->
     </v-card>
   </v-container>
 </template>

@@ -63,13 +63,6 @@
 </template>
 
 <script>
-import Stomp from 'stomp-websocket'
-import SockJs from 'sockjs-client'
-
-// 웹 소켓 설정
-let sock = new SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
-let ws = Stomp.over(sock);
-
 export default {
   name: 'DashboardCoreChatting',
   data: () => ({
@@ -79,8 +72,13 @@ export default {
     rooms: [],
     room: {},
     userId: null,
+    ws: undefined,
   }),
   created() {
+    // 웹 소켓 설정
+    let sock = new this.$SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
+    this.ws = this.$Stomp.over(sock);
+
     this.userId = this.$store.state.userId;
     this.stompStart();
   },
@@ -119,14 +117,13 @@ export default {
       this.yetCount = this.notifications.filter(e => e.status==='YET').length;
     },
     stompStart() {
-
-      ws.connect(
+      this.ws.connect(
         {},
         () => {
-          ws.subscribe('/sub/chat/user/'+this.userId, (reponse) => {
+          this.ws.subscribe('/sub/chat/user/'+this.userId, (reponse) => {
             this.getChatList(JSON.parse(reponse.body));
           });
-          ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
+          this.ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
         }
       );
     },
