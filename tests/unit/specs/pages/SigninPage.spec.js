@@ -17,6 +17,6 @@ describe('SigninPage', () => {
   })
 
   test('Form test', () => {
-    expect(wrapper.text()).toBe('로그인   회원가입 로그인   로그인')
+    expect(wrapper.text()).toBe('로그인   회원가입 로그인')
   })
 })
