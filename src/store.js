@@ -64,7 +64,7 @@ export default new Vuex.Store({
   },
   getters: {
     isSignedIn(state) {
-      return state.userId !== '';
+      return state.userId !== '' && state.userIn !== null;
     },
     getIsChattingListShow(state) {
       return state.chattingListShow
