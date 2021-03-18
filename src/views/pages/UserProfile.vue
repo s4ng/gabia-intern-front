@@ -63,11 +63,15 @@
             </div>
           </template>
           <v-card-text class="text-center">
-            <h4 class="display-2 font-weight-light mb-3 black--text" v-text="$store.state.userName + ' 님'">
+            <h4 class="display-2 font-weight-light mb-3 black--text" v-text="userName + ' 님'">
             </h4>
 
+            <h5 
+              class="display-2 font-weight-light mb-3 black--text"
+              v-text="userPoint">
+            </h5>
             <v-btn
-              color="success"
+              color="error"
               rounded
               class="mr-0"
               @click="signOut"
@@ -84,10 +88,14 @@
 <script>
 export default {
   data: () => ({
+    userId: '',
     userName: '',
+    userPoint: null,
   }),
-  created() {
-    this.userName = this.$store.state.userName;
+  async created() {
+    this.userId = await this.$store.state.userId;
+    this.userName = await this.$store.state.userName;
+    // await this.getUser();
   },
   methods: {
     signOut() {
@@ -98,7 +106,18 @@ export default {
     },
     redirect() {
       this.$router.push('/')
-    }
+    },
+    // async getUser() {
+    //   const APIURL = process.env.VUE_APP_API_URL;
+
+    //   try {
+    //     const { data } = await this.$axios.get(`${APIURL}/users/${this.userId}`)
+    //     console.log(data);
+    //     this.userPoint = data.user_point;
+    //   } catch(err) {
+    //     console.log('user api error')
+    //   }
+    // }
   }
 }
 </script>
