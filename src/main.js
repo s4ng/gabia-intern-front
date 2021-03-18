@@ -9,15 +9,6 @@ import i18n from './i18n'
 import VueAxios from './plugins/axios'
 import VueMoment from 'vue-moment'
 import moment from 'moment-timezone'
-import Stomp from 'stomp-websocket'
-import SockJs from 'sockjs-client'
-
-// 웹 소켓 설정
-let sock = new SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
-let ws = Stomp.over(sock);
-ws.connect();
-
-Vue.prototype.$ws = ws;
 
 Vue.config.productionTip = false
 

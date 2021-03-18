@@ -132,8 +132,7 @@ export default {
     leftTimeInterval: '',
     leftTime: '',
     comments: [],
-    isJoinedRaffle: false,
-    raffleParticipants : 50,
+    raffleParticipants : [],
   }),
   created() {
     this.userId = this.$store.state.userId;
@@ -149,13 +148,22 @@ export default {
       return Intl.NumberFormat('ko-kR', {style: 'currency', currency: 'KRW'}).format(this.board.sell_price);
     },
     raffleParticipantsToText() {
-      return this.raffleParticipants + ' 명';
+      return this.raffleParticipants.length + ' 명';
     },
     imgUrlSetter() {
       if(this.board.img === '' || this.board.img === undefined) {
         return 'http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif'
       }
       return `${process.env.VUE_APP_API_URL}/images/${this.board.img}`
+    },
+    isJoinedRaffle() {
+      let checkResult = false;
+      this.raffleParticipants.forEach(e => {
+        if(e.user_id === this.userId) {
+          checkResult = true;
+        }
+      });
+      return checkResult;
     }
   },
   methods: {
@@ -195,7 +203,6 @@ export default {
       try {
         const postData = await this.$axios.get(`${APIURL}/posts/${this.boardId}`)
         this.board = postData.data.data;
-        console.log(this.board)
       } catch(err) {
         alert(`글 조회 실패\n${err}`)
       }
@@ -223,20 +230,46 @@ export default {
       let leftTimeSecond = raffleClose.diff(now)
       this.leftTime = `${this.$moment.duration(leftTimeSecond).locale('ko').humanize()} 남았음`;
     },
-    joinRaffle() {
+    async joinRaffle() {
       if(this.leftTime === '끝났음') {
         alert('신청이 마감되었습니다.');
         return;
       }
-      // FIXME : API 연결로 수정
-      this.isJoinedRaffle = true;
+      const APIURL = process.env.VUE_APP_API_URL;
+
+      try {
+        await this.$axios.post(`${APIURL}/raffles`, {
+          board_id: this.board.board_id,
+          user_id: this.userId
+        })
+        this.getRaffles();
+      } catch(err) {
+        alert(`래플 신청 오류\n${err}`);
+      }
     },
-    cancelRaffle() {
+    async cancelRaffle() {
       if(this.leftTime === '끝났음') {
         alert('신청이 마감되었습니다.');
         return;
       }
-      this.isJoinedRaffle = false;
+      const APIURL = process.env.VUE_APP_API_URL;
+
+      try {
+        await this.$axios.delete(`${APIURL}/raffles?postId=${this.board.board_id}&userId=${this.userId}`)
+        this.getRaffles();
+      } catch(err) {
+        alert(`래플 신청 오류\n${err}`);
+      }
+    },
+    async getRaffles() {
+      const APIURL = process.env.VUE_APP_API_URL;
+
+      try {
+        let getRes = await this.$axios.get(`${APIURL}/raffles/${this.board.board_id}`)
+        this.raffleParticipants = getRes.data.data
+      } catch(err) {
+        console.log('raffle get error\n' + err)
+      }
     },
     async removePost() {
       if(confirm('게시물을 삭제하시겠습니까?')) {
@@ -254,7 +287,7 @@ export default {
   async mounted() {
     await this.getPost();
     this.getComments();
-
+    this.getRaffles();
     // 컴포넌트가 Mount 되고 나서 지연없이 바로 한 번 실행
     this.leftTimeSetter();
     // 그 후 Interval

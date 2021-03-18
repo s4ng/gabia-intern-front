@@ -27,6 +27,12 @@
 </template>
 
 <script>
+import Stomp from 'stomp-websocket'
+import SockJs from 'sockjs-client'
+
+// 웹 소켓 설정
+let sock = new SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
+let ws = Stomp.over(sock);
 export default {
   data: () => ({
     notifications: [],
@@ -47,10 +53,15 @@ export default {
       this.yetCount = this.notifications.filter(e => e.status==='YET').length;
     },
     stompStart() {
-      this.$ws.subscribe('/sub/alert/'+this.userId, (reponse) => {
-        this.getAlert(JSON.parse(reponse.body))
-      });
-      this.$ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'YET'}));
+      ws.connect(
+        {},
+        () => {
+          ws.subscribe('/sub/alert/'+this.userId, (reponse) => {
+            this.getAlert(JSON.parse(reponse.body))
+          });
+          ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'YET'}));
+        }
+      );
     },
     getAlert(alerts) {
       if(Array.isArray(alerts)) {
@@ -60,7 +71,7 @@ export default {
       this.notifications.unshift(alerts);
     },
     updateAlert() {
-      this.$ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'READ'}));
+      ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'READ'}));
       this.alertCount();
     }
   },
