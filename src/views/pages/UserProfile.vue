@@ -12,11 +12,11 @@
         <base-material-card>
           <template v-slot:heading>
             <div class="display-2 font-weight-light">
-              Edit Profile
+              회원 정보 수정
             </div>
 
             <div class="subtitle-1 font-weight-light">
-              Complete your profile
+              회원 정보 수정 페이지입니다.
             </div>
           </template>
 
@@ -25,100 +25,14 @@
               <v-row>
                 <v-col
                   cols="12"
-                  md="4"
+                  class="ma-10 pr-16"
                 >
                   <v-text-field
-                    label="Company (disabled)"
-                    disabled
-                  />
-                </v-col>
-
-                <v-col
-                  cols="12"
-                  md="4"
-                >
-                  <v-text-field
-                    class="purple-input"
+                    v-model="userName"
                     label="User Name"
-                  />
-                </v-col>
-
-                <v-col
-                  cols="12"
-                  md="4"
-                >
-                  <v-text-field
-                    label="Email Address"
                     class="purple-input"
                   />
                 </v-col>
-
-                <v-col
-                  cols="12"
-                  md="6"
-                >
-                  <v-text-field
-                    label="First Name"
-                    class="purple-input"
-                  />
-                </v-col>
-
-                <v-col
-                  cols="12"
-                  md="6"
-                >
-                  <v-text-field
-                    label="Last Name"
-                    class="purple-input"
-                  />
-                </v-col>
-
-                <v-col cols="12">
-                  <v-text-field
-                    label="Adress"
-                    class="purple-input"
-                  />
-                </v-col>
-
-                <v-col
-                  cols="12"
-                  md="4"
-                >
-                  <v-text-field
-                    label="City"
-                    class="purple-input"
-                  />
-                </v-col>
-
-                <v-col
-                  cols="12"
-                  md="4"
-                >
-                  <v-text-field
-                    label="Country"
-                    class="purple-input"
-                  />
-                </v-col>
-
-                <v-col
-                  cols="12"
-                  md="4"
-                >
-                  <v-text-field
-                    class="purple-input"
-                    label="Postal Code"
-                    type="number"
-                  />
-                </v-col>
-
-                <v-col cols="12">
-                  <v-textarea
-                    class="purple-input"
-                    label="About Me"
-                    value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                  />
-                </v-col>
-
                 <v-col
                   cols="12"
                   class="text-right"
@@ -127,7 +41,7 @@
                     color="success"
                     class="mr-0"
                   >
-                    Update Profile
+                    정보 수정
                   </v-btn>
                 </v-col>
               </v-row>
@@ -143,6 +57,11 @@
         <base-material-card
           class="v-card-profile"
         >
+          <template v-slot:heading>
+            <div class="display-2 font-weight-light">
+              회원 정보
+            </div>
+          </template>
           <v-card-text class="text-center">
             <h4 class="display-2 font-weight-light mb-3 black--text" v-text="$store.state.userName + ' 님'">
             </h4>
@@ -164,6 +83,12 @@
 
 <script>
 export default {
+  data: () => ({
+    userName: '',
+  }),
+  created() {
+    this.userName = this.$store.state.userName;
+  },
   methods: {
     signOut() {
       this.$store
