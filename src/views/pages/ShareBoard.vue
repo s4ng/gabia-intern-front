@@ -83,8 +83,9 @@
         </tbody>
       </v-simple-table>
     </v-card>
+    <div id="top"></div>
     <v-container
-      class="d-flex flex-wrap">
+      class="d-flex flex-wrap item-list">
       <base-item-card
         v-for="item in shareItems"
         :key="item.id"
@@ -140,8 +141,8 @@ export default {
     }
   },
   watch: {
-    searchChangeChecker() {
-      this.getShareBoard();
+    async searchChangeChecker() {
+      await this.getShareBoard();
     },
   },
   methods: {
@@ -156,9 +157,6 @@ export default {
         alert(`나눔 게시판 조회 오류\nerr: ${err}`);
       }
     },
-    scrollToTop() {
-      window.scrollTo(0, 0)
-    },
     initSearch() {
       this.sort = 'time';
       this.presentStatusCreated= false;
@@ -166,6 +164,10 @@ export default {
       this.itemStatusNew= false;
       this.itemStatusUsed= false;
       this.range = [1000, 200000];
+    },
+    scrollToTop() {
+      let el = document.getElementById('top');
+      el.scrollIntoView(false);
     }
   },
   mounted() {
