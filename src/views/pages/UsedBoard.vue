@@ -15,13 +15,13 @@
             <td>판매상태</td>
             <td>
               <v-checkbox
-                v-model="usedStatusCreated">
+                v-model="statusCreated">
                  <span slot="label" class="black--text">판매중</span>
               </v-checkbox>
             </td>
             <td>
               <v-checkbox
-                v-model="usedStatusClosed">
+                v-model="statusClosed">
                  <span slot="label" class="black--text">판매종료</span>
               </v-checkbox>
             </td>
@@ -39,6 +39,18 @@
                 v-model="itemStatusUsed">
                  <span slot="label" class="black--text">사용감 있음</span>
               </v-checkbox>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              검색어
+            </td>
+            <td
+              colspan="2">
+              <v-text-field 
+                v-model="searchKeyword"
+                label="검색어 입력"
+                class="mx-3"></v-text-field>
             </td>
           </tr>
           <tr>
@@ -143,8 +155,9 @@ export default {
     max: 200000,
     range: [1000, 200000],
     sort: 'time',
-    usedStatusCreated: false,
-    usedStatusClosed: false,
+    searchKeyword: '',
+    statusCreated: false,
+    statusClosed: false,
     itemStatusNew: false,
     itemStatusUsed: false,
   }),
@@ -155,8 +168,9 @@ export default {
         page,
         range,
         sort,
-        usedStatusCreated,
-        usedStatusClosed,
+        searchKeyword,
+        statusCreated,
+        statusClosed,
         itemStatusNew,
         itemStatusUsed
       } = this
@@ -165,8 +179,9 @@ export default {
         page,
         range,
         sort,
-        usedStatusCreated,
-        usedStatusClosed,
+        searchKeyword,
+        statusCreated,
+        statusClosed,
         itemStatusNew,
         itemStatusUsed
       }
@@ -191,6 +206,7 @@ export default {
     },
     initSearch() {
       this.sort = 'time';
+      this.searchKeyword = '';
       this.usedStatusCreated= false;
       this.usedStatusClosed= false;
       this.itemStatusNew= false;

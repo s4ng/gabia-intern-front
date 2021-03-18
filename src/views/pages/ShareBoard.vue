@@ -16,13 +16,13 @@
             <td>나눔상태</td>
             <td>
               <v-checkbox
-                v-model="presentStatusCreated">
+                v-model="statusCreated">
                  <span slot="label" class="black--text">나눔중</span>
               </v-checkbox>
             </td>
             <td>
               <v-checkbox
-                v-model="presentStatusClosed">
+                v-model="statusClosed">
                  <span slot="label" class="black--text">나눔종료</span>
               </v-checkbox>
             </td>
@@ -40,6 +40,18 @@
                 v-model="itemStatusUsed">
                  <span slot="label" class="black--text">사용감 있음</span>
               </v-checkbox>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              검색어
+            </td>
+            <td
+              colspan="2">
+              <v-text-field 
+                v-model="searchKeyword"
+                label="검색어 입력"
+                class="mx-3"></v-text-field>
             </td>
           </tr>
           <tr>
@@ -107,8 +119,9 @@ export default {
     pageLength: 1,
     shareItems: [],
     sort: 'time',
-    presentStatusCreated: false,
-    presentStatusClosed: false,
+    searchKeyword: '',
+    statusCreated: false,
+    statusClosed: false,
     itemStatusNew: false,
     itemStatusUsed: false,
   }),
@@ -119,8 +132,9 @@ export default {
       const {
         page,
         sort,
-        presentStatusCreated,
-        presentStatusClosed,
+        searchKeyword,
+        statusCreated,
+        statusClosed,
         itemStatusNew,
         itemStatusUsed
       } = this
@@ -128,8 +142,9 @@ export default {
       return {
         page,
         sort,
-        presentStatusCreated,
-        presentStatusClosed,
+        searchKeyword,
+        statusCreated,
+        statusClosed,
         itemStatusNew,
         itemStatusUsed
       }
@@ -143,7 +158,6 @@ export default {
   methods: {
     async getShareBoard() {
       const APIURL = `${process.env.VUE_APP_API_URL}/boards/present/posts?page=${this.page}`
-
       try {
         const { data } = await this.$axios.get(APIURL);
         this.shareItems = data.data.board_list;
@@ -154,6 +168,7 @@ export default {
     },
     initSearch() {
       this.sort = 'time';
+      this.searchKeyword = '';
       this.presentStatusCreated= false;
       this.presentStatusClosed= false;
       this.itemStatusNew= false;
