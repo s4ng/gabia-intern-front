@@ -106,9 +106,6 @@ export default {
     page: 1,
     pageLength: 1,
     shareItems: [],
-    min: 1000,
-    max: 200000,
-    range: [1000, 200000],
     sort: 'time',
     presentStatusCreated: false,
     presentStatusClosed: false,
@@ -121,7 +118,6 @@ export default {
       // 그리고 이 값을 watch 함수로 지켜보고 있다가 값이 변경되면 함수 실행
       const {
         page,
-        range,
         sort,
         presentStatusCreated,
         presentStatusClosed,
@@ -131,7 +127,6 @@ export default {
 
       return {
         page,
-        range,
         sort,
         presentStatusCreated,
         presentStatusClosed,
@@ -163,7 +158,6 @@ export default {
       this.presentStatusClosed= false;
       this.itemStatusNew= false;
       this.itemStatusUsed= false;
-      this.range = [1000, 200000];
     },
     scrollToTop() {
       let el = document.getElementById('top');
