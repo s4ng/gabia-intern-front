@@ -171,9 +171,39 @@ export default {
   },
   methods: {
     async getShareBoard() {
+      
+      let params = {
+        page: this.page
+      };
+
+      if(this.min === null && this.max !== null) {
+        params.max = this.max;
+      }
+
+      if(this.min !== null && this.max === null) {
+        params.min = this.min;
+      }
+
+      if(this.searchKeyword !== '') {
+        params.title = this.searchKeyword;
+      }
+
+      if(this.statusCreated ^ this.statusClosed) {
+        params.status = this.statusCreated ? 'CREATED' : 'CLOSED'
+      }
+
+      if(this.usedGoodsStatusNew ^ this.usedGoodsStatusUsed) {
+        params.usedGoodsStatus = this.usedGoodsStatus ? 'NEW' : 'USED'
+      }
+
+      if(this.sort !== 'time') {
+        params.sort = this.sort;
+      }
+
       const APIURL = `${process.env.VUE_APP_API_URL}/boards/present/posts?page=${this.page}`
+
       try {
-        const { data } = await this.$axios.get(APIURL);
+        const { data } = await this.$axios.get(APIURL, {params: params});
         this.shareItems = data.data.board_list;
         this.pageLength = data.data.page_count;
       } catch(err) {
