@@ -30,13 +30,13 @@
             <td>상품상태</td>
             <td>
               <v-checkbox
-                v-model="itemStatusNew">
+                v-model="usedGoodsStatusNew">
                  <span slot="label" class="black--text">새 것</span>
               </v-checkbox>
             </td>
             <td>
               <v-checkbox
-                v-model="itemStatusUsed">
+                v-model="usedGoodsStatusUsed">
                  <span slot="label" class="black--text">사용감 있음</span>
               </v-checkbox>
             </td>
@@ -55,37 +55,19 @@
           </tr>
           <tr>
             <td>가격대 설정</td>
-            <td
-              colspan="2">
-              <v-range-slider
-                v-model="range"
-                :max="max"
-                :min="min"
-                hide-details
-                step="1000"
-                class="align-center"
-              >
-                <template v-slot:prepend>
-                  <v-text-field
-                    :value="range[0]"
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    style="width: 60px"
-                    @change="$set(range, 0, $event)"
-                  ></v-text-field>
-                </template>
-                <template v-slot:append>
-                  <v-text-field
-                    :value="range[1]"
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    style="width: 60px"
-                    @change="$set(range, 1, $event)"
-                  ></v-text-field>
-                </template>
-              </v-range-slider>
+            <td>
+              <v-text-field
+                type="number"
+                v-model="min"
+                label="최소값 입력">
+              </v-text-field>
+            </td>
+            <td>
+              <v-text-field
+                type="number"
+                v-model="max"
+                label="최대값 입력">
+              </v-text-field>
             </td>
           </tr>
           <tr>
@@ -155,39 +137,43 @@ export default {
     page: 1,
     pageLength: 1,
     usedItems: [],
-    min: 1000,
-    max: 200000,
-    range: [1000, 200000],
+    min: null,
+    max: null,
+    // time, lowPrice, highPrice
     sort: 'time',
     searchKeyword: '',
+    // CREATED, CLOSED
     statusCreated: false,
     statusClosed: false,
-    itemStatusNew: false,
-    itemStatusUsed: false,
+    // NEW. USED
+    usedGoodsStatusNew: false,
+    usedGoodsStatusUsed: false,
   }),
   computed:{
     searchChangeChecker() {
       // computed에서 각 변수에 담긴 값을 확인하고 어떤 값이든지 변경사항이 생길경우 리턴함.
       const {
         page,
-        range,
+        min,
+        max,
         sort,
         searchKeyword,
         statusCreated,
         statusClosed,
-        itemStatusNew,
-        itemStatusUsed
+        usedGoodsStatusNew,
+        usedGoodsStatusUsed,
       } = this
 
       return {
         page,
-        range,
+        min,
+        max,
         sort,
         searchKeyword,
         statusCreated,
         statusClosed,
-        itemStatusNew,
-        itemStatusUsed
+        usedGoodsStatusNew,
+        usedGoodsStatusUsed,
       }
     }
   },
@@ -198,15 +184,52 @@ export default {
   },
   methods: {
     async getUsedBoard() {
-      const APIURL = `${process.env.VUE_APP_API_URL}/boards/used/posts?page=${this.page}`
+      // const APIURL = `${process.env.VUE_APP_API_URL}/boards/used/posts/search`
 
-      try {
-        const { data } = await this.$axios.get(APIURL);
-        this.usedItems = data.data.board_list;
-        this.pageLength = data.data.page_count;
-      } catch(err) {
-        alert(`중고 게시판 조회 오류\n${err}`);
+      let params = {
+        page: this.page
+      };
+
+      if(this.min === null && this.max !== null) {
+        params.max = this.max;
       }
+
+      if(this.min !== null && this.max === null) {
+        params.min = this.min;
+      }
+
+      if(this.min !== null || this.max !== null) {
+        if(this.min <= this.max) {
+          params.min = this.min;
+          params.max = this.max;
+        }
+      }
+
+      if(this.searchKeyword !== '') {
+        params.title = this.searchKeyword;
+      }
+
+      if(this.statusCreated ^ this.statusClosed) {
+        params.status = this.statusCreated ? 'CREATED' : 'CLOSED'
+      }
+
+      if(this.usedGoodsStatusNew ^ this.usedGoodsStatusUsed) {
+        params.usedGoodsStatus = this.usedGoodsStatus ? 'new' : 'used'
+      }
+
+      if(this.sort !== 'time') {
+        params.sort = this.sort;
+      }
+
+      console.log(params)
+
+      // try {
+      //   const { data } = await this.$axios.get(APIURL, {params: params});
+      //   this.usedItems = data.data.board_list;
+      //   this.pageLength = data.data.page_count;
+      // } catch(err) {
+      //   alert(`중고 게시판 조회 오류\n${err}`);
+      // }
     },
     initSearch() {
       this.sort = 'time';
