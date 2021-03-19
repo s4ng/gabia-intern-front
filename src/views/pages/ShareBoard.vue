@@ -13,6 +13,27 @@
       <v-simple-table>
         <tbody>
           <tr>
+            <td>
+              검색어
+            </td>
+            <td
+              colspan="2">
+              <v-row
+                class="mx-1 mt-2 pa-1">
+                <v-text-field 
+                  v-model="searchKeywordText"
+                  label="검색어 입력"
+                  @keyup.enter="changeSearchKeyword"
+                  class="ma-auto mx-2 mb-0">
+                </v-text-field>
+                <v-btn
+                  @click="changeSearchKeyword"
+                  class="mx-auto mb-1"
+                  color="primary">검색</v-btn>
+              </v-row>
+            </td>
+          </tr>
+          <tr>
             <td>나눔상태</td>
             <td>
               <v-checkbox
@@ -40,18 +61,6 @@
                 v-model="itemStatusUsed">
                  <span slot="label" class="black--text">사용감 있음</span>
               </v-checkbox>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              검색어
-            </td>
-            <td
-              colspan="2">
-              <v-text-field 
-                v-model="searchKeyword"
-                label="검색어 입력"
-                class="mx-3"></v-text-field>
             </td>
           </tr>
           <tr>
@@ -123,6 +132,7 @@ export default {
     pageLength: 1,
     shareItems: [],
     sort: 'time',
+    searchKeywordText: '',
     searchKeyword: '',
     statusCreated: false,
     statusClosed: false,
@@ -181,6 +191,9 @@ export default {
     scrollToTop() {
       let el = document.getElementById('top');
       el.scrollIntoView(false);
+    },
+    changeSearchKeyword() {
+      this.searchKeyword = this.searchKeywordText;
     }
   },
   mounted() {

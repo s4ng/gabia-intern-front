@@ -15,13 +15,23 @@
 
     <v-list max-height="500" :tile="false" nav>
       <div>
-        <v-container
+        <v-simple-table
           v-for="(n, i) in notifications"
           :key="`item-${i}`">
-          <v-list-item-title
-            v-text="n.message" />
-          <v-divider></v-divider>
-        </v-container>
+          <tbody>
+            <tr>
+              <td>
+                <v-list-item-title
+                  v-text="alertTypeCheck(n.alert_type)"/>
+              </td>
+              <td>
+                <v-list-item-subtitle
+                  v-text="n.message" />
+              </td>
+            </tr>
+          </tbody>
+        </v-simple-table>
+        <v-divider></v-divider>
       </div>
     </v-list>
   </v-menu>
@@ -73,7 +83,19 @@ export default {
     updateAlert() {
       this.ws.send('/pub/alert/user', {}, JSON.stringify({ user_id: this.userId, status: 'READ'}));
       this.alertCount();
+    },
+    alertTypeCheck(type) {
+      let typeData = {
+        COMMENT: '댓글',
+        RAFFLE: '래플',
+        SUGGESTION: '제안',
+        KEYWORD: '키워드'
+      }
+      if(type in typeData) return typeData[type];
     }
   },
 };
 </script>
+<style>
+table td + td { border-left:1px solid #dddddd; }
+</style>

@@ -149,7 +149,8 @@ export default {
 <style>
   #chatting {
     position: fixed;
-    margin:85px;
+    margin:35px;
+    margin-bottom: 90px;
     right: 0;
     bottom: 0;
   }

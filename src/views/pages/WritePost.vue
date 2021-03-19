@@ -3,175 +3,195 @@
     <v-card
       class="mx-auto my-6 pa-5"
       max-width="1000">
-      <v-row>
-        <v-col
-          cols="2">
-          <v-select
-            outlined
-            label="게시판 종류"
-            v-model="boardType"
-            :items="boards">
-          </v-select>
-        </v-col>
-        <v-col
-          v-if="boardType === 'notice'"
-          cols="4">
-          <v-select
-            outlined
-            label="세부 카테고리."
-            v-model="detailBoardType"
-            :items="detailBoardTypeCheck">
-          </v-select>
-        </v-col>
-        <v-col
-          v-if="boardType !== 'notice' && $store.state.boardType.includes(boardType)"
-          cols="4">
-          <v-row>
-            <v-col
-              cols="6">
-              <v-select
-                outlined
-                label="세부 카테고리"
-                v-model="detailBoardType"
-                :items="detailBoardTypeCheck">
-              </v-select>
-            </v-col>
-            <v-col
-              cols="6">
-              <v-select
-                outlined
-                label="제품 상태"
-                v-model="itemStatus"
-                :items="itemStatusList">
-              </v-select>
-            </v-col>
-          </v-row>
-        </v-col>
-        <v-col
-          cols="4"
-          v-if="boardType === 'used'">
-          <v-text-field
-            outlined
-            type="number"
-            :rules="priceRules"
-            v-model="price"
-            label="가격">
-          </v-text-field>
-        </v-col>
-        <v-col
-          cols="2"
-          v-if="boardType === 'used'">
-          <v-select
-            outlined
-            label="가격 추천"
-            v-model="priceSuggestion"
-            :items="boolSelects">
-          </v-select>
-        </v-col>
-        <v-col
-          cols="3"
-          v-if="boardType === 'present'">
-        <v-menu
-            ref="menu"
-            v-model="menu"
-            :close-on-content-click="false"
-            :return-value.sync="date"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                outlined
-                v-model="date"
-                label="래플 종료일"
-                prepend-icon="mdi-calendar"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="date"
-              no-title
-              scrollable
-            >
-              <v-spacer></v-spacer>
-              <v-btn
-                text
-                color="primary"
-                @click="menu = false"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                text
-                color="primary"
-                @click="$refs.menu.save(date)"
-              >
-                OK
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col
-          cols="3"
-          v-if="boardType === 'present'">
+      <v-form
+        v-model="valid">
+        <v-row>
+          <v-col
+            cols="2">
+            <v-select
+              outlined
+              required
+              :rules="[v => !!v || '입력해주세요']"
+              label="게시판 종류"
+              v-model="selectBoardType"
+              :items="boards">
+            </v-select>
+          </v-col>
+          <v-col
+            v-if="boardType === 'notice'"
+            cols="4">
+            <v-select
+              :items="detailBoardTypeCheck"
+              :rules="[v => !!v || '입력해주세요']"
+              required
+              outlined
+              label="세부 카테고리."
+              v-model="detailBoardType">
+            </v-select>
+          </v-col>
+          <v-col
+            v-if="boardType !== 'notice' && $store.state.boardType.includes(boardType)"
+            cols="4">
+            <v-row>
+              <v-col
+                cols="6">
+                <v-select
+                  outlined
+                  :rules="[v => !!v || '입력해주세요']"
+                  required
+                  label="세부 카테고리"
+                  v-model="selectDetailBoardType"
+                  :items="detailBoardTypeCheck">
+                </v-select>
+              </v-col>
+              <v-col
+                cols="6">
+                <v-select
+                  :rules="[v => !!v || '입력해주세요']"
+                  required
+                  outlined
+                  label="제품 상태"
+                  v-model="selectItemStatus"
+                  :items="itemStatusList">
+                </v-select>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col
+            cols="4"
+            v-if="boardType === 'used'">
+            <v-text-field
+              outlined
+              required
+              type="number"
+              :rules="priceRules"
+              v-model="price"
+              label="가격">
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="2"
+            v-if="boardType === 'used'">
+            <v-select
+              outlined
+              :rules="[v => !!v || '입력해주세요']"
+              label="가격 추천"
+              v-model="priceSuggestion"
+              :items="boolSelects">
+            </v-select>
+          </v-col>
+          <v-col
+            cols="3"
+            v-if="boardType === 'present'">
           <v-menu
-            ref="menu2"
-            v-model="menu2"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            :return-value.sync="time"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                outlined
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="date"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  outlined
+                  :rules="[v => !!v || '입력해주세요']"
+                  required
+                  v-model="date"
+                  label="래플 종료일"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="date"
+                no-title
+                scrollable
+              >
+                <v-spacer></v-spacer>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="menu = false"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.menu.save(date)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col
+            cols="3"
+            v-if="boardType === 'present'">
+            <v-menu
+              ref="menu2"
+              v-model="menu2"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              :return-value.sync="time"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  outlined
+                  :rules="[v => !!v || '입력해주세요']"
+                  required
+                  v-model="time"
+                  label="래플 종료시간"
+                  prepend-icon="mdi-clock-time-four-outline"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                v-if="menu2"
                 v-model="time"
-                label="래플 종료시간"
-                prepend-icon="mdi-clock-time-four-outline"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-time-picker
-              v-if="menu2"
-              v-model="time"
-              full-width
-              @click:minute="$refs.menu2.save(time)"
-            ></v-time-picker>
-          </v-menu>
-        </v-col>
-      </v-row>
-      <v-container
-        v-if="boardType !== 'notice'">
-        <v-file-input 
+                full-width
+                @click:minute="$refs.menu2.save(time)"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
+        </v-row>
+        <v-container
+          v-if="boardType !== 'notice'">
+          <v-file-input 
+            outlined
+            label="이미지를 업로드하려면 클릭하세요"
+            show-size
+            v-model="imgFile"/>
+        </v-container>
+        <v-text-field
           outlined
-          label="이미지를 업로드하려면 클릭하세요"
-          show-size
-          v-model="imgFile"/>
-      </v-container>
-      <v-text-field
-        outlined
-        label="제목을 입력해주세요."
-        v-model="title"></v-text-field>
-      <v-divider></v-divider>
-      <v-textarea
-        outlined
-        rows="15"
-        label="글을 입력해주세요."
-        v-model="description"></v-textarea>
-      <v-container
-        class="d-flex justify-end">
-        <v-btn
-          color="success"
-          @click="savePost">글쓰기</v-btn>
-      </v-container>
+          :rules="[v => !!v || '입력해주세요']"
+          required
+          label="제목을 입력해주세요."
+          v-model="title"></v-text-field>
+        <v-divider></v-divider>
+        <v-textarea
+          outlined
+          rows="15"
+          label="글을 입력해주세요."
+          v-model="description"></v-textarea>
+        <v-container
+          class="d-flex justify-end">
+          <v-btn
+            :disabled="!valid"
+            color="success"
+            @click="savePost">글쓰기</v-btn>
+        </v-container>
+      </v-form>
     </v-card>
   </v-container>
 </template>
@@ -179,12 +199,11 @@
 <script>
 export default {
   data: () => ({
-    // FIX : item-card 브랜치에 있는 전역 boards type으로 변경
-    // 다음 이슈에서 중고 및 나눔 게시판 상세 설정
+    valid: true,
     menu: false,
     menu2: false,
-    boards: [],
-    itemStatusList: ['NEW', 'USED'],
+    boards: ['공지사항', '중고게시판', '나눔게시판'],
+    itemStatusList: ['새 것', '사용감 있음'],
     boolSelects: ['예', '아니오'],
     title: '',
     description: '',
@@ -192,9 +211,9 @@ export default {
     price: 1000,
     date: null,
     time: null,
-    boardType: '',
-    detailBoardType: '',
-    itemStatus: '',
+    selectBoardType: null,
+    selectDetailBoardType: null,
+    selectItemStatus: null,
     imgFile: undefined,
     imgName:'',
     priceRules: [
@@ -203,6 +222,36 @@ export default {
     ]
   }),
   computed: {
+    itemStatus() {
+      let itemStatusData = {
+        '새 것': 'NEW',
+        '사용감 있음': 'USED'
+      }
+      if(this.selectItemStatus in itemStatusData) return itemStatusData[this.selectItemStatus];
+      return '';
+    },
+    detailBoardType() {
+      let detailBoardTypeData = {
+        업데이트: 'UPDATE',
+        일반: 'GENERAL',
+        이벤트: 'EVENT',
+
+        디지털: 'DIGITAL',
+        책: 'BOOK',
+        식료품: 'FOOD',
+        '티켓/상품권': 'TICKET'
+      }
+      if(this.selectDetailBoardType in detailBoardTypeData) return detailBoardTypeData[this.selectDetailBoardType];
+      return '';
+    },
+    boardType() {
+      let boardTypeData = {
+        공지사항: 'notice',
+        중고게시판: 'used',
+        나눔게시판: 'present'
+      }
+      return boardTypeData[this.selectBoardType]
+    },
     detailBoardTypeCheck() {
 
       if(!this.$store.state.boardType.includes(this.boardType)) {
@@ -211,13 +260,13 @@ export default {
 
       const BOARDTYPE = {
         notice: [
-          'UPDATE', 'GENERAL', 'EVENT'
+          '업데이트', '일반', '이벤트'
         ],
         used: [
-          'DIGITAL', 'BOOK', 'FOOD', 'TICKET'
+          '디지털', '책', '식료품', '티켓/상품권'
         ],
         present: [
-          'DIGITAL', 'BOOK', 'FOOD', 'TICKET'
+          '디지털', '책', '식료품', '티켓/상품권'
         ]
       }
 
@@ -235,6 +284,11 @@ export default {
     },
   },
   methods: {
+    detailBoardTypeError() {
+      if(this.selectDetailBoardType === null) true
+      
+      return false;
+    },
     postForm(boardType) {
       if(!this.$store.state.boardType.includes(boardType)) {
         return null;
@@ -275,7 +329,6 @@ export default {
       } 
       if(boardType === 'used') {
 
-        console.log(this.priceSuggestionChecker)
         boardData.price_suggestion = this.priceSuggestionChecker;
         boardData.sell_price = this.price;
         boardData.used_goods_category = this.detailBoardType;
@@ -289,6 +342,9 @@ export default {
       if(this.imgFile !== undefined) {
         await this.saveImage();
       }
+
+      // if(this.)
+
       const APIURL = process.env.VUE_APP_API_URL;
       const form = this.postForm(this.boardType);
 
@@ -325,8 +381,12 @@ export default {
     }
   },
   mounted() {
-    this.boardType = this.$route.query.board;
-    this.boards = this.$store.state.boardType;
+    let boardTypeData = {
+      notice: '공지사항',
+      present: '나눔게시판',
+      used: '중고게시판'
+    }
+    this.selectBoardType = boardTypeData[this.$route.query.board];
   }
 }
 </script>

@@ -21,13 +21,14 @@
     <v-list id="chatList">
       <div>
         <div
+          style="padding-top: 0"
           class="d-flex"
           v-for="item in chatting"
           :key="item.chat_message_id">
           <v-card
             max-width="250"
-            class="pa-3 mr-2 d-inline-flex"
-            :class="item.user_id === userId && 'ml-auto yellow lighten-4'"
+            class="pa-3 mr-2 my-2 d-inline-flex"
+            :class="item.user_id === userId && 'ml-auto yellow lighten-4' || 'gray lighten-4'"
             v-if="item.message !== ''"
             v-text="item.message">
           </v-card>
@@ -98,6 +99,9 @@ export default {
       this.$emit('go-to-chat-list');
     },
     sendMessage() {
+      if(this.message === '') {
+        return;
+      }
       this.ws.send('/pub/chat/room', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'TALK', chat_room_id: this.room.chat_room_id }));
       this.message = '';
     },
@@ -141,5 +145,8 @@ export default {
   overflow-y:auto;
   display: flex;
   flex-direction: column-reverse;
+}
+.v-card {
+  margin: 0;
 }
 </style>

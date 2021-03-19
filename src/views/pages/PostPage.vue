@@ -25,8 +25,8 @@
             <v-card-title
               class="pt-5 mt-10 ml-3 headline"
               v-text="board.title"></v-card-title>
-            <v-container
-              class="d-flex flex-wrap">
+            <div
+              class="d-flex flex-wrap pl-3">
               <v-card-subtitle
                 v-text="board.name"/>
               <v-card-subtitle
@@ -50,14 +50,14 @@
                   @click="cancelRaffle"
                   class="ma-auto">나눔받기 취소</v-btn>
               </div>
-            </v-container>
+            </div>
             <v-row
-              class="pl-2">
-              <v-container
+              class="pl-5">
+              <div
                 v-if="board.board_type === 'USED'"
                 class="d-flex flex-wrap">
-                <v-card-subtitle>가격제시 : </v-card-subtitle>
-                <v-card-subtitle v-text="priceSuggestionFormatter"/>
+                <v-card-subtitle class="ma-auto">가격제시 : </v-card-subtitle>
+                <v-card-subtitle class="ma-auto" v-text="priceSuggestionFormatter"/>
                 <div v-if="board.price_suggestion">
                   <v-btn
                     v-if="board.user_id !== userId"
@@ -75,18 +75,26 @@
                     @click="chattingRequest"
                     class="ma-6">채팅으로 거래하기</v-btn>
                 </div>
-              </v-container>
-              <v-container
+              </div>
+              <div
                 v-if="board.board_type === 'PRESENT'"
                 class="d-flex flex-wrap">
                 <v-card-subtitle
+                  class="ma-auto pr-10"
                   v-text="leftTime"/>
+                <p class="ma-auto" style="font-size: 20px">|</p>
                 <p
-                  class="ma-auto"
-                  style="font-size: 20px;"
+                  class="ma-auto pl-10"
+                  style="font-size: 15px;"
                   v-if="board.board_type === 'PRESENT'"
                   v-text="raffleParticipantsToText"/>
-              </v-container>
+              </div>
+            </v-row>
+            <v-row
+              v-if="board.board_type === 'PRESENT' || board.board_type === 'USED'"
+              class="pl-5">
+              <v-card-subtitle
+                v-text="statusToString"></v-card-subtitle>
             </v-row>
           </v-col>
         </v-row>
@@ -144,7 +152,7 @@ export default {
       return Intl.NumberFormat('ko-kR', {style: 'currency', currency: 'KRW'}).format(this.board.sell_price);
     },
     raffleParticipantsToText() {
-      return this.raffleParticipants.length + ' 명';
+      return '나눔 참여자 : ' + this.raffleParticipants.length + ' 명';
     },
     imgUrlSetter() {
       if(this.board.img === '' || this.board.img === undefined) {
@@ -166,6 +174,15 @@ export default {
         return true;
       }
       return false;
+    },
+    statusToString() {
+      let goodsStatus = this.board.present_goods_status || this.board.used_goods_status;
+      let statusData = {
+        USED : '사용감 있음',
+        NEW : '새 것'
+      }
+      if(goodsStatus in statusData) return `상태 : ${statusData[goodsStatus]}`;
+      return '';
     }
   },
   methods: {
@@ -288,6 +305,7 @@ export default {
   },
   async mounted() {
     await this.getPost();
+    console.log(this.board);
     this.getComments();
     this.getRaffles();
     // 컴포넌트가 Mount 되고 나서 지연없이 바로 한 번 실행

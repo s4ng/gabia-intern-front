@@ -1,5 +1,11 @@
 <template>
   <v-container>
+    <v-container
+      class="d-flex justify-end ma-1 px-16">
+      <base-write-post-button
+        fromBoard="used">
+      </base-write-post-button>
+    </v-container>
     <v-card
       max-width="1000"
       class="mx-auto py-6">

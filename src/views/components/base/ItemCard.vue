@@ -20,38 +20,35 @@
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
               <v-card-title
-                class="headline ml-3"
+                class="headline ml-3 mb-2"
                 v-text="board.title"></v-card-title>
 
-              <v-spacer></v-spacer>
-              
               <v-card-text
-                v-html="switchSubtitleByBoardType" class="h3 ma-4"></v-card-text>
+                v-html="switchSubtitleByBoardType" class="h3 mx-3 mt-4 mb-2"></v-card-text>
+              <p
+                class="mx-7"
+                v-text="userNameSetter"></p>
             </div>
           </div>
           <v-row>
+            <v-col cols="6">
+              <v-card
+                elevation="0"
+                width="120"
+                height="50"
+                class="pa-3 mt-0">
+              </v-card>
+            </v-col>
             <v-col class="" cols="6">
               <v-card 
                 :color="switchStatusColor"
                 width="120"
                 height="50"
-                class="ml-2 pa-4">
+                class="ml-2 pa-3 mt-0">
                 <v-row
                   class="ma-auto subtitle-2"
                   justify="center"
                   v-text="switchStatus">
-                </v-row>
-              </v-card>
-            </v-col>
-            <v-col cols="6">
-              <v-card
-                width="120"
-                height="50"
-                class="mr-5 pa-4">
-                <v-row
-                  class="ma-auto subtitle-2"
-                  justify="center"
-                  v-text="board.name">
                 </v-row>
               </v-card>
             </v-col>
@@ -139,6 +136,9 @@ export default {
         :this.dateFormatter(this.board.raffle_closed_at);
       
       return result;
+    },
+    userNameSetter() {
+      return '작성자 : ' + this.board.name
     }
   },
   methods: {
