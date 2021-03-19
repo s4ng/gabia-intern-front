@@ -194,7 +194,7 @@ export default {
   },
   methods: {
     async getUsedBoard() {
-      // const APIURL = `${process.env.VUE_APP_API_URL}/boards/used/posts/search`
+      const APIURL = `${process.env.VUE_APP_API_URL}/boards/used/posts/search`
 
       let params = {
         page: this.page
@@ -233,13 +233,13 @@ export default {
 
       console.log(params)
 
-      // try {
-      //   const { data } = await this.$axios.get(APIURL, {params: params});
-      //   this.usedItems = data.data.board_list;
-      //   this.pageLength = data.data.page_count;
-      // } catch(err) {
-      //   alert(`중고 게시판 조회 오류\n${err}`);
-      // }
+      try {
+        const { data } = await this.$axios.get(APIURL, {params: params});
+        this.usedItems = data.data.board_list;
+        this.pageLength = data.data.page_count;
+      } catch(err) {
+        alert(`중고 게시판 조회 오류\n${err}`);
+      }
     },
     initSearch() {
       this.sort = 'time';
@@ -248,7 +248,8 @@ export default {
       this.usedStatusClosed= false;
       this.itemStatusNew= false;
       this.itemStatusUsed= false;
-      this.range = [1000, 200000];
+      this.min = null;
+      this.max = null;
     },
     changeSearchKeyword() {
       this.searchKeyword = this.searchKeywordText;

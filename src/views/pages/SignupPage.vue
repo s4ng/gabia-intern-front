@@ -3,44 +3,51 @@
     <v-card
       max-width="500"
       class="mx-auto my-12">
-      <v-container
-        class="ma-5">
-        <v-card-title class="ma-2 ml-4 mb-10">회원가입</v-card-title>
-        <v-text-field
-          label="아이디"
-          v-model="userId"
-          outlined
-          :rules="idRules"
-          class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
-        <v-text-field
-          label="비밀번호"
-          v-model="password"
-          outlined
-          :rules="pwRules"
-          type="password"
-          class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
-        <v-text-field
-          label="비밀번호 확인"
-          v-model="passwordCheck"
-          outlined
-          :rules="pwCheckRules"
-          type="password"
-          class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
-        <v-text-field
-          label="닉네임"
-          v-model="nickName"
-          outlined
-          :rules="nickRules"
-          @keyup.enter="signUp"
-          class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
+      <v-form v-model="valid">
         <v-container
-          class="d-flex justify-end">
-          <v-btn
-            class="ma-4"
-            color="success"
-            @click="signUp">회원가입</v-btn>
+          class="ma-5">
+          <v-card-title class="ma-2 ml-4 mb-10">회원가입</v-card-title>
+          <v-text-field
+            label="아이디"
+            required
+            v-model="userId"
+            outlined
+            :rules="idRules"
+            class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
+          <v-text-field
+            label="비밀번호"
+            v-model="password"
+            required
+            outlined
+            :rules="pwRules"
+            type="password"
+            class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
+          <v-text-field
+            label="비밀번호 확인"
+            v-model="passwordCheck"
+            required
+            outlined
+            :rules="pwCheckRules"
+            type="password"
+            class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
+          <v-text-field
+            label="닉네임"
+            v-model="nickName"
+            required
+            outlined
+            :rules="nickRules"
+            @keyup.enter="signUp"
+            class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
+          <v-container
+            class="d-flex justify-end">
+            <v-btn
+              :disabled="!valid"
+              class="ma-4"
+              color="success"
+              @click="signUp">회원가입</v-btn>
+          </v-container>
         </v-container>
-      </v-container>
+      </v-form>
     </v-card>
   </v-container>
 </template>
@@ -48,6 +55,7 @@
 <script>
 export default {
   data: () => ({
+    valid: true,
     userId: '',
     password: '',
     passwordCheck: '',
@@ -87,6 +95,10 @@ export default {
       }
     },
     async signUp() {
+
+      if(!this.valid) {
+        return;
+      }
 
       if(!this.passwordConfirmMatcher) {
         alert('비밀번호 확인이 같지 않습니다.');

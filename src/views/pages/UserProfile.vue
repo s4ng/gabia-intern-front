@@ -29,7 +29,22 @@
                 >
                   <v-text-field
                     v-model="userName"
-                    label="User Name"
+                    label="닉네임"
+                    class="purple-input"
+                  />
+                </v-col>
+                <v-col
+                  cols="12"
+                  class="ma-10 pr-16"
+                >
+                  <v-text-field
+                    v-model="userName"
+                    label="닉네임"
+                    class="purple-input"
+                  />
+                  <v-text-field
+                    v-model="userName"
+                    label="닉네임"
                     class="purple-input"
                   />
                 </v-col>
@@ -68,7 +83,7 @@
 
             <h5 
               class="display-2 font-weight-light mb-3 black--text"
-              v-text="userPoint">
+              v-text="pointToString">
             </h5>
             <v-btn
               color="error"
@@ -90,12 +105,19 @@ export default {
   data: () => ({
     userId: '',
     userName: '',
+    userType: '',
     userPoint: null,
   }),
   async created() {
     this.userId = await this.$store.state.userId;
     this.userName = await this.$store.state.userName;
-    // await this.getUser();
+    this.userType = await this.$store.state.userType;
+    await this.getUser();
+  },
+  computed: {
+    pointToString() {
+      return `래플 점수 : ${this.userPoint}` 
+    }
   },
   methods: {
     signOut() {
@@ -107,17 +129,17 @@ export default {
     redirect() {
       this.$router.push('/')
     },
-    // async getUser() {
-    //   const APIURL = process.env.VUE_APP_API_URL;
+    async getUser() {
+      const APIURL = process.env.VUE_APP_API_URL;
 
-    //   try {
-    //     const { data } = await this.$axios.get(`${APIURL}/users/${this.userId}`)
-    //     console.log(data);
-    //     this.userPoint = data.user_point;
-    //   } catch(err) {
-    //     console.log('user api error')
-    //   }
-    // }
+      try {
+        const { data } = await this.$axios.get(`${APIURL}/users/${this.userType.toLowerCase()}?userId=${this.userId}`)
+        console.log(data);
+        this.userPoint = data.data.point;
+      } catch(err) {
+        console.log('user api error')
+      }
+    }
   }
 }
 </script>

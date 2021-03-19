@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import router from './router'
 import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
@@ -35,7 +36,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    SIGNIN({ commit }, { userId, password }) {
+    async SIGNIN({ commit }, { userId, password }) {
 
       const APIURL = process.env.VUE_APP_API_URL;
 
@@ -44,16 +45,14 @@ export default new Vuex.Store({
         password: password
       }
 
-      return axios
-        .post(`${APIURL}/users/login`, USERDATA)
-        .then(res => {
-          commit('SIGNIN', res.data)
-          console.log(res.data)
-          window.location.reload();
-        })
-        .catch(err => {
-          alert(`로그인에 실패했습니다.\n에러 : ${err}`)
-        })
+      try {
+        let signinRes = await axios.post(`${APIURL}/users/login`, USERDATA);
+        router.push('/');
+        window.location.reload();
+        return commit('SIGNIN', signinRes.data)
+      } catch(err) {
+        alert('아이디 또는 비밀번호가 틀렸습니다.');
+      }
     },
     SIGNOUT({ commit }) {
       commit('SIGNOUT')
