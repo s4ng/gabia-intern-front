@@ -35,9 +35,36 @@
               <template v-slot:badge>
                 <span>{{ yetCount(room) }}</span>
               </template>
-              <v-card-text v-html="chatRoomNameSetter(room)"></v-card-text>
             </v-badge> 
-            <v-card-text v-else v-html="chatRoomNameSetter(room)"></v-card-text>
+            <v-row>
+              <v-col
+                cols="3">
+                <v-img
+                  class="mx-3"
+                  width="100"
+                  height="100"
+                  :src="imgUrlSetter(chatRoomNameSplitter(room.chat_room_name)[5])">
+                </v-img>
+              </v-col>
+              <v-col
+                cols="9">
+                <h4 
+                  class="pa-2"
+                  v-text="chatRoomNameSplitter(room.chat_room_name)[2]"></h4>
+                <div
+                  class="pa-2"
+                  v-text="chatRoomUserNameSetter(room)">
+                </div>
+                <div
+                  class="d-flex pa-1">
+                <v-card 
+                  :color="chatRoomColorSetter(room)"
+                  class="ma-0 pa-1"
+                  v-text="chatRoomStatusSetter(room)">
+                </v-card>
+                </div>
+              </v-col>
+            </v-row>
           </v-card>
          
       </v-container>
@@ -78,7 +105,7 @@ export default {
     // 웹 소켓 설정
     let sock = new this.$SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
     this.ws = this.$Stomp.over(sock);
-    this.ws.debug = () => {};
+    // this.ws.debug = () => {};
 
     this.userId = this.$store.state.userId;
     this.stompStart();
@@ -135,13 +162,42 @@ export default {
         return chatRoom.buyer_count;
       }
     },
-    chatRoomNameSetter(room) {
-      let roomName = room.chat_room_name;
-      if(roomName === '' || roomName === undefined) {
-        return 'err'
+    chatRoomNameSplitter(chatRoom) {
+      return chatRoom.split('|');
+    },
+    imgUrlSetter(imgUrl) {
+      return `${process.env.VUE_APP_API_URL}/images/${imgUrl}`;
+    },
+    chatRoomUserNameSetter(room) {
+      let seller = `판매자 : ${this.chatRoomNameSplitter(room.chat_room_name)[0]}`;
+      let buyer = `구매자 : ${this.chatRoomNameSplitter(room.chat_room_name)[1]}`
+      return `${seller} / ${buyer}` 
+    },
+    chatRoomStatusSetter(room) {
+      let status = this.chatRoomNameSplitter(room.chat_room_name)[4];
+
+      if(status === 'CREATED') {
+        return '판매중'
       }
-      let split = roomName.split('/');
-      return split[2]+ '<br>' + split[0] + '&nbsp&nbsp&nbsp&nbsp' + split[1]; 
+      if(status === 'MODIFIED') {
+        return '판매중'
+      }
+      if(status === 'CLOSED') {
+        return '판매완료'
+      }
+    },
+    chatRoomColorSetter(room) {
+      let status = this.chatRoomNameSplitter(room.chat_room_name)[4];
+
+      if(status === 'CREATED') {
+        return '#A5D6A7'
+      }
+      if(status === 'MODIFIED') {
+        return '#A5D6A7'
+      }
+      if(status === 'CLOSED') {
+        return '#EF9A9A'
+      }
     }
   }
 }

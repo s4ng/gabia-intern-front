@@ -64,33 +64,6 @@
             </td>
           </tr>
           <tr>
-            <td>
-              정렬
-            </td>
-            <td
-              colspan="2">
-              <div
-                class="pl-10">
-                <v-radio-group
-                  v-model="sort"
-                  row>
-                  <v-radio
-                    value="time">
-                    <span slot="label" class="black--text">최신 순</span>
-                  </v-radio>
-                  <v-radio
-                    value="lowPrice">
-                    <span slot="label" class="black--text">낮은 가격 순</span>
-                  </v-radio>
-                  <v-radio
-                    value="highPrice">
-                    <span slot="label" class="black--text">높은 가격 순</span>
-                  </v-radio>
-                </v-radio-group>
-              </div>
-            </td>
-          </tr>
-          <tr>
             <td
               colspan="3">
               <v-btn
@@ -176,14 +149,6 @@ export default {
         page: this.page
       };
 
-      if(this.min === null && this.max !== null) {
-        params.max = this.max;
-      }
-
-      if(this.min !== null && this.max === null) {
-        params.min = this.min;
-      }
-
       if(this.searchKeyword !== '') {
         params.title = this.searchKeyword;
       }
@@ -193,7 +158,7 @@ export default {
       }
 
       if(this.usedGoodsStatusNew ^ this.usedGoodsStatusUsed) {
-        params.usedGoodsStatus = this.usedGoodsStatus ? 'NEW' : 'USED'
+        params.goodsStatus = this.usedGoodsStatusNew ? 'NEW' : 'USED'
       }
 
       if(this.sort !== 'time') {
@@ -212,7 +177,7 @@ export default {
     },
     initSearch() {
       this.sort = 'time';
-      this.searchKeyword = '';
+      this.searchKeywordText = '';
       this.presentStatusCreated= false;
       this.presentStatusClosed= false;
       this.itemStatusNew= false;
@@ -224,7 +189,7 @@ export default {
     },
     changeSearchKeyword() {
       this.searchKeyword = this.searchKeywordText;
-    }
+    },
   },
   mounted() {
     this.getShareBoard();

@@ -95,11 +95,11 @@
                     <span slot="label" class="black--text">최신 순</span>
                   </v-radio>
                   <v-radio
-                    value="lowPrice">
+                    value="LOW_PRICE">
                     <span slot="label" class="black--text">낮은 가격 순</span>
                   </v-radio>
                   <v-radio
-                    value="highPrice">
+                    value="HIGH_PRICE">
                     <span slot="label" class="black--text">높은 가격 순</span>
                   </v-radio>
                 </v-radio-group>
@@ -224,14 +224,12 @@ export default {
       }
 
       if(this.usedGoodsStatusNew ^ this.usedGoodsStatusUsed) {
-        params.usedGoodsStatus = this.usedGoodsStatus ? 'new' : 'used'
+        params.goodsStatus = this.usedGoodsStatusNew ? 'NEW' : 'USED'
       }
 
       if(this.sort !== 'time') {
         params.sort = this.sort;
       }
-
-      console.log(params)
 
       try {
         const { data } = await this.$axios.get(APIURL, {params: params});
@@ -243,7 +241,7 @@ export default {
     },
     initSearch() {
       this.sort = 'time';
-      this.searchKeyword = '';
+      this.searchKeywordText = '';
       this.usedStatusCreated= false;
       this.usedStatusClosed= false;
       this.itemStatusNew= false;

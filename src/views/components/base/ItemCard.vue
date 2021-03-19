@@ -44,7 +44,7 @@
                 :color="switchStatusColor"
                 width="120"
                 height="50"
-                class="ml-2 pa-3 mt-0">
+                class="ml-2 pa-4 mt-0">
                 <v-row
                   class="ma-auto subtitle-2"
                   justify="center"

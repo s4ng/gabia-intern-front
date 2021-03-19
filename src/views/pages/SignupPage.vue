@@ -90,8 +90,9 @@ export default {
       try {
         await this.$axios.post(APIURL, userData)
         alert('회원가입 완료!\n로그인 해주세요.')
+        this.$router.push('/signin')
       } catch(err) {
-        alert(`회원가입에 실패했습니다.\n에러 : ${err}`)
+        alert(err)
       }
     },
     async signUp() {
@@ -113,8 +114,6 @@ export default {
       }     
 
       await this.signUpRequest(userData);
-
-      this.$router.push('/signin')
     }
   }
 }

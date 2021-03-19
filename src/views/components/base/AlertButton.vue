@@ -15,11 +15,11 @@
 
     <v-list max-height="500" :tile="false" nav>
       <div>
-        <v-simple-table
-          v-for="(n, i) in notifications"
-          :key="`item-${i}`">
+        <v-simple-table>
           <tbody>
-            <tr>
+            <tr 
+              v-for="(n, i) in notifications"
+              :key="`item-${i}`">
               <td>
                 <v-list-item-title
                   v-text="alertTypeCheck(n.alert_type)"/>

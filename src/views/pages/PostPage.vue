@@ -94,7 +94,7 @@
               v-if="board.board_type === 'PRESENT' || board.board_type === 'USED'"
               class="pl-5">
               <v-card-subtitle
-                v-text="statusToString"></v-card-subtitle>
+                v-html="statusToString"></v-card-subtitle>
             </v-row>
           </v-col>
         </v-row>
@@ -176,13 +176,25 @@ export default {
       return false;
     },
     statusToString() {
+      let goodsCategory = this.board.present_goods_category || this.board.used_goods_category;
       let goodsStatus = this.board.present_goods_status || this.board.used_goods_status;
       let statusData = {
         USED : '사용감 있음',
         NEW : '새 것'
       }
-      if(goodsStatus in statusData) return `상태 : ${statusData[goodsStatus]}`;
-      return '';
+
+      let categoryData = {
+        BOOK : '책',
+        DIGITAL : '디지털',
+        FOOD: '식료품',
+        TICKET: '상품권/티켓'
+      }
+      let resultString = '';
+
+      if(goodsCategory in categoryData) resultString += `카테고리 : ${categoryData[goodsCategory]}`;
+      if(resultString !== '') resultString += '<br><br>';
+      if(goodsStatus in statusData) resultString += `상태 : ${statusData[goodsStatus]}`;
+      return resultString;
     }
   },
   methods: {
