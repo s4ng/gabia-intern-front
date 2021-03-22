@@ -76,13 +76,48 @@
           </tr>
           <tr>
             <td
-              colspan="3">
+              colspan="1">
               <v-btn
-                class="ma-3 mx-6"
+                class="my-3"
                 color="indigo"
                 @click="initSearch">
                 초기화
               </v-btn>
+            </td>
+            <td
+              colspan="2">
+              <div
+                v-if="searchKeyword !== ''"
+                class="text-center">
+                <div v-if="!isSearchKeywordInAlertKeywords">
+                  <a
+                    v-text="searchKeyword"
+                    @click="addKeyword"></a>
+                  <span> 키워드를 추가하시겠습니까?</span>
+                </div>
+                <div v-if="isSearchKeywordInAlertKeywords">
+                  <a
+                    v-text="searchKeyword"
+                    @click="removeKeyword"></a>
+                  <span> 키워드를 삭제하시겠습니까?</span>
+                </div>
+              </div>
+              <v-snackbar
+                v-model="snackbar"
+                :timeout="timeout"
+              >
+                {{ snackbarText }}
+                <template v-slot:action="{ attrs }">
+                  <v-btn
+                    color="blue"
+                    text
+                    v-bind="attrs"
+                    @click="snackbar = false"
+                  >
+                    Close
+                  </v-btn>
+                </template>
+              </v-snackbar>
             </td>
           </tr>
         </tbody>
@@ -114,7 +149,11 @@ export default {
   data: () => ({
     page: 1,
     pageLength: 1,
+    snackbar: false,
+    snackbarText: '',
+    timeout: 1500,
     shareItems: [],
+    alertKeyword: [],
     sort: 'time',
     searchKeywordText: '',
     boardCategory: '',
@@ -149,7 +188,16 @@ export default {
         itemStatusNew,
         itemStatusUsed
       }
-    }
+    },
+    isSearchKeywordInAlertKeywords() {
+      let result = false;
+      this.alertKeyword.forEach(e => {
+        if(e.keyword === this.searchKeyword) {
+          result = true;
+        }
+      })
+      return result;
+    },
   },
   watch: {
     async searchChangeChecker() {
@@ -187,7 +235,6 @@ export default {
 
       try {
         const { data } = await this.$axios.get(APIURL, {params: params});
-        console.log(params)
         this.shareItems = data.data.board_list;
         this.pageLength = data.data.total_page;
       } catch(err) {
@@ -197,8 +244,10 @@ export default {
     initSearch() {
       this.sort = 'time';
       this.searchKeywordText = '';
-      this.presentStatusCreated= false;
-      this.presentStatusClosed= false;
+      this.searchKeyword = '';
+      this.boardCategory = '';
+      this.statusCreated= false;
+      this.statusClosed= false;
       this.itemStatusNew= false;
       this.itemStatusUsed= false;
     },
@@ -209,8 +258,54 @@ export default {
     changeSearchKeyword() {
       this.searchKeyword = this.searchKeywordText;
     },
+    async addKeyword() {
+      const APIURL = process.env.VUE_APP_API_URL;
+
+      try {
+        await this.$axios.post(`${APIURL}/alert-keyword`, {
+          user_id: this.$store.state.userId,
+          keyword: this.searchKeyword
+        })
+      } catch(err) {
+        console.log(err);
+      }
+      this.snackbarText = '추가되었습니다.'
+      this.snackbar = true;
+      await this.getAlertKeyword();
+      this.alertKeyword = this.$store.state.alertKeyword.data;
+    },
+    async removeKeyword() {
+      const APIURL = process.env.VUE_APP_API_URL;
+
+      let keywordId;
+      
+      this.alertKeyword.forEach(e => {
+        if(e.keyword === this.searchKeyword) {
+          keywordId = e.alert_keyword_id;
+          return;
+        }
+      })
+
+      try {
+        await this.$axios.delete(`${APIURL}/alert-keyword?id=${keywordId}`)
+      } catch(err) {
+        console.log(err);
+      }
+      this.snackbarText = '삭제되었습니다.'
+      this.snackbar = true;
+      await this.getAlertKeyword();
+      this.alertKeyword = this.$store.state.alertKeyword.data;
+    },
+    async getAlertKeyword() {
+      try {
+        await this.$store.dispatch('GETALERTKEYWORD', this.$store.state.userId);
+      } catch(err) {
+        console.log(err)
+      }
+    },
   },
   mounted() {
+    this.alertKeyword = this.$store.state.alertKeyword.data;
     this.getShareBoard();
   }
 }

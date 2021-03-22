@@ -1,11 +1,8 @@
 <template>
   <v-container
     class="d-flex align-start flex-column">
-    <v-container
-      class="d-flex flex-wrap">
-      <v-card-title
-          class="ma-2"
-          v-html="roomNameSetter"></v-card-title>
+    <div
+      class="px-1 d-flex flex-wrap">
       <v-btn
           class="ml-auto"
           small
@@ -16,7 +13,13 @@
           mdi-backspace-outline
           </v-icon>
       </v-btn>
-    </v-container>
+      <router-link
+        class="text-lg-h3 ma-2 link"
+        v-html="roomNameSetter"
+        :to="{name: '게시판',  params: {boardId: room.board_id}, query: { board: 'used'}}"
+        >
+      </router-link>
+    </div>
 
     <v-list id="chatList">
       <div>
@@ -129,18 +132,29 @@ export default {
         this.goToChatList();
         this.ws.send('/pub/chat/room/close', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'CLOSE', chat_room_id: this.room.chat_room_id }));
       }
-    }
+    },
   },
   computed: {
     roomNameSetter() {
       return this.room.chat_room_name.split('|')[2]
     },
-
   }
 }
 </script>
 
 <style>
+.link:visited {
+  color: black;
+}
+.link:link {
+  color: black;
+}
+.link:active {
+  color: black;
+}
+.link:hover {
+   color: grey;
+}
 #chatList{
   height:410px;/* or any height you want */
   width:350px;

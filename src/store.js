@@ -14,7 +14,9 @@ export default new Vuex.Store({
     drawer: null,
     userId: null,
     userType: '',
+    gabiaId: '',
     userName: '',
+    alertKeyword: [],
     isChattingListShow: false
     // password: null,
   },
@@ -26,11 +28,16 @@ export default new Vuex.Store({
       state.userId = userData.data.user_id;
       state.userName = userData.data.name;
       state.userType = userData.data.user_type;
+      state.gabiaId = userData.data.gabia_id;
+    },
+    GETALERTKEYWORD(state, alertKeyword) {
+      state.alertKeyword = alertKeyword;
     },
     SIGNOUT(state) {
       state.userId = '';
       state.userName = '';
       state.userType = '';
+      state.gabiaId = '';
     },
     CHATTINGLISTSHOW(state) {
       state.isChattingListShow = !state.isChattingListShow;
@@ -46,20 +53,39 @@ export default new Vuex.Store({
         password: password
       }
 
+      let signinRes;
+
       try {
-        let signinRes = await axios.post(`${APIURL}/users/login`, USERDATA);
-        router.push('/');
-        window.location.reload();
-        return commit('SIGNIN', signinRes.data)
+        signinRes = await axios.post(`${APIURL}/users/login`, USERDATA);
       } catch(err) {
         alert('아이디 또는 비밀번호가 틀렸습니다.');
       }
+
+      router.push('/');
+      window.location.reload();
+      return commit('SIGNIN', signinRes.data)
     },
     SIGNOUT({ commit }) {
       commit('SIGNOUT')
     },
+    async GETALERTKEYWORD({ commit }, userId) {
+      const APIURL = process.env.VUE_APP_API_URL;
+
+      let alertKeywords;
+
+      try {
+        alertKeywords = await axios.get(`${APIURL}/alert-keyword`, { params: { userId : userId }});
+      } catch(err) {
+        console.log(err);
+      }
+
+      return commit('GETALERTKEYWORD', alertKeywords.data)
+    },
     CHATTINGLISTSHOW({ commit }) {
       commit('CHATTINGLISTSHOW')
+    },
+    SETUSERDATA({ commit }, userData) {
+      commit('SIGNIN', userData)
     }
   },
   getters: {
@@ -72,7 +98,7 @@ export default new Vuex.Store({
   },
   plugins: [
     createPersistedState({
-      paths: ['userId', 'userType', 'userName']
+      paths: ['userId', 'userType', 'userName', 'gabiaId', 'alertKeyword']
     })
   ]
 })

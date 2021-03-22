@@ -47,7 +47,7 @@ export default {
   }),
   methods: {
     async getUsedBoard() {
-      const APIURL = `${process.env.VUE_APP_API_URL}/boards/used/posts?page=${this.page}`
+      const APIURL = `${process.env.VUE_APP_API_URL}/boards/used/posts/search?page=${this.page}`
 
       try {
         const { data } = await this.$axios.get(APIURL);
@@ -57,7 +57,7 @@ export default {
       }
     },
     async getShareBoard() {
-      const APIURL = `${process.env.VUE_APP_API_URL}/boards/present/posts?page=${this.page}`
+      const APIURL = `${process.env.VUE_APP_API_URL}/boards/present/posts/search?page=${this.page}`
 
       try {
         const { data } = await this.$axios.get(APIURL);

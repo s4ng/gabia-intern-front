@@ -9,9 +9,9 @@
         @click="removePost"
         style="color : #B71C1C"
         class="pa-2 ml-auto">글 삭제하기</v-card>
-      <v-container>
+      <div>
         <v-row
-          class="px-5">
+          class="mb-2 px-5">
           <v-col
             v-if="board.board_type !== 'NOTICE'"
             cols="4">
@@ -58,12 +58,12 @@
                 class="d-flex flex-wrap">
                 <v-card-subtitle class="ma-auto">가격제시 : </v-card-subtitle>
                 <v-card-subtitle class="ma-auto" v-text="priceSuggestionFormatter"/>
-                <div v-if="board.price_suggestion">
+                <!-- <div v-if="board.price_suggestion">
                   <v-btn
                     v-if="board.user_id !== userId"
                     color="#1976D2"
                     class="ma-6">가격제시</v-btn>
-                </div>
+                </div> -->
                 <v-btn
                   v-if="board.status === 'CLOSED'"
                   color="gray"
@@ -98,8 +98,13 @@
             </v-row>
           </v-col>
         </v-row>
-      </v-container>
+      </div>
       <v-divider></v-divider>
+      <v-card
+        v-if="board.board_type === 'PRESENT' && board.status === 'CLOSED'"
+        class="ma-5 pa-5 red lighten-4">
+        <v-card-title v-text="raffleWinnerText"></v-card-title>
+      </v-card>
       <v-container
         class="pa-12">
         <v-textarea
@@ -195,6 +200,15 @@ export default {
       if(resultString !== '') resultString += '<br><br>';
       if(goodsStatus in statusData) resultString += `상태 : ${statusData[goodsStatus]}`;
       return resultString;
+    },
+    raffleWinnerText() {
+      let winner;
+      this.raffleParticipants.forEach(e => {
+        if(e.raffle_status === 'WIN') {
+          winner = e.gabia_id
+        }
+      })
+      return `${winner}님이 래플에 당첨되셨습니다!`;
     }
   },
   methods: {
@@ -317,7 +331,6 @@ export default {
   },
   async mounted() {
     await this.getPost();
-    console.log(this.board);
     this.getComments();
     this.getRaffles();
     // 컴포넌트가 Mount 되고 나서 지연없이 바로 한 번 실행
@@ -329,6 +342,6 @@ export default {
       }
       this.leftTimeSetter();
     }, 1000)
-  }
+  },
 }
 </script>

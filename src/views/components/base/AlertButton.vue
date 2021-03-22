@@ -17,7 +17,7 @@
       <div>
         <v-simple-table>
           <tbody>
-            <tr 
+            <tr
               v-for="(n, i) in notifications"
               :key="`item-${i}`">
               <td>
@@ -25,8 +25,13 @@
                   v-text="alertTypeCheck(n.alert_type)"/>
               </td>
               <td>
-                <v-list-item-subtitle
-                  v-text="n.message" />
+                <router-link
+                  class="link"
+                  :to="{name: '게시판',  params: {boardId: n.board_id}, query: { board: n.board_type.toLowerCase()}}"
+                  >
+                  <v-list-item-subtitle
+                    v-text="n.message" />
+                </router-link>
               </td>
             </tr>
           </tbody>
@@ -54,7 +59,7 @@ export default {
     // 웹 소켓 설정
     let sock = new this.$SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
     this.ws = this.$Stomp.over(sock);
-    this.ws.debug = () => {};
+    // this.ws.debug = () => {};
 
     this.userId = this.$store.state.userId;
     this.stompStart();
@@ -98,5 +103,17 @@ export default {
 };
 </script>
 <style>
+.link:visited {
+  color: black;
+}
+.link:link {
+  color: black;
+}
+.link:active {
+  color: black;
+}
+.link:hover {
+   color: grey;
+}
 table td + td { border-left:1px solid #dddddd; }
 </style>

@@ -17,12 +17,12 @@
 
       <v-container
         v-if="!isChatting">
-        <v-container
+        <div
           class="d-flex flex-wrap">
           <v-card-title
             class="ma-2">채팅 목록
           </v-card-title>
-        </v-container>
+        </div>
         <!-- FIXME : 채팅 리스트용 카드 넣는 부분 -->
         
           <v-card

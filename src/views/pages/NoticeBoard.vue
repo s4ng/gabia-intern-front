@@ -21,6 +21,7 @@
       </v-row>
       <v-card
         class="ma-1"
+        elevation="1"
         v-for="board in boards"
         :key="board.board_id">
         <router-link 
@@ -72,10 +73,9 @@ export default {
     async getNoticeBoards() {
 
       const APIURL = process.env.VUE_APP_API_URL;
-      let pageNum = 1;
       
       try {
-        const res = await this.$axios.get(`${APIURL}/boards/notice/posts?page=${pageNum}`);
+        const res = await this.$axios.get(`${APIURL}/boards/notice/posts?page=${this.page}`);
         this.boards = res.data.data.board_list;
         this.pageLength = res.data.data.total_page
       } catch(err) {
@@ -84,7 +84,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$store.state.userName + ' ' + this.$store.state.userType)
     this.getNoticeBoards();
   }
 }

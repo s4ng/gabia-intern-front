@@ -92,8 +92,12 @@ export default {
       } catch({ message }) {
         alert(`로그인 실패\n${message}`);
       }
-    },
-    redirect() {
+
+      try {
+        await this.$store.dispatch('GETALERTKEYWORD', this.$store.state.userId);
+      } catch(err) {
+        console.log(err)
+      }
     },
     redirectToSignUp() {
       this.$router.push('/signup');

@@ -25,7 +25,7 @@
               <v-row>
                 <v-col
                   cols="12"
-                  class="ma-10 pr-16"
+                  class="mx-10 my-5 pr-16"
                 >
                   <v-text-field
                     v-model="userName"
@@ -34,18 +34,34 @@
                   />
                 </v-col>
                 <v-col
+                  class="text-center"
+                  v-if="!passwordChange">
+                  <v-btn
+                    rounded
+                    color="primary"
+                    @click="passwordChange = true"
+                    class="ma-auto">
+                    비밀번호 수정
+                  </v-btn>
+                </v-col>
+                <v-col
                   cols="12"
-                  class="ma-10 pr-16"
-                >
+                  class="mx-10 my-5 pr-16"
+                  v-if="passwordChange">
                   <v-text-field
-                    v-model="userName"
-                    label="닉네임"
+                    v-model="oldPassword"
+                    label="기존 비밀번호"
                     class="purple-input"
                   />
                   <v-text-field
-                    v-model="userName"
-                    label="닉네임"
+                    v-model="oldPasswordCheck"
+                    label="기존 비밀번호 확인"
                     class="purple-input"
+                  />
+                  <v-text-field
+                    v-model="newPassword"
+                    label="새로운 비밀번호"
+                    class="my-5 purple-input"
                   />
                 </v-col>
                 <v-col
@@ -55,6 +71,7 @@
                   <v-btn
                     color="success"
                     class="mr-0"
+                    @click="updateUser"
                   >
                     정보 수정
                   </v-btn>
@@ -78,13 +95,25 @@
             </div>
           </template>
           <v-card-text class="text-center">
-            <h4 class="display-2 font-weight-light mb-3 black--text" v-text="userName + ' 님'">
+            <h4 class="display-2 font-weight-light mb-3 black--text" v-text="$store.state.userName + ' 님'">
             </h4>
 
             <h5 
               class="display-2 font-weight-light mb-3 black--text"
               v-text="pointToString">
             </h5>
+            <div class="mt-10 d-flex flex-wrap">
+              <div>알림 키워드</div>
+            </div>
+            <div
+              class="d-flex flex-wrap mb-3">
+              <v-card
+                v-for="keyword in keywords"
+                :key="keyword.alert_keyword_id"
+                color="grey lighten-2"
+                class="pa-1 ma-1"
+                v-text="keyword.keyword"></v-card>
+            </div>
             <v-btn
               color="error"
               rounded
@@ -107,16 +136,23 @@ export default {
     userName: '',
     userType: '',
     userPoint: null,
+    passwordChange: false,
+    oldPassword: '',
+    oldPasswordCheck: '',
+    newPassword: '',
+    keywords: [],
   }),
   async created() {
     this.userId = await this.$store.state.userId;
     this.userName = await this.$store.state.userName;
     this.userType = await this.$store.state.userType;
+    this.keywords = await this.$store.state.alertKeyword.data;
     await this.getUser();
+    await this.getAlertKeyword();
   },
   computed: {
     pointToString() {
-      return `래플 점수 : ${this.userPoint}` 
+      return `활동 점수 : ${this.userPoint}` 
     }
   },
   methods: {
@@ -134,10 +170,53 @@ export default {
 
       try {
         const { data } = await this.$axios.get(`${APIURL}/users/${this.userType.toLowerCase()}?userId=${this.userId}`)
-        console.log(data);
         this.userPoint = data.data.point;
       } catch(err) {
         console.log('user api error')
+      }
+    },
+    async getAlertKeyword() {
+      try {
+        await this.$store.dispatch('GETALERTKEYWORD', this.$store.state.userId);
+      } catch(err) {
+        console.log(err)
+      }
+    },
+    async updateUser() {
+      let userData = {
+        user_type: this.userType,
+        user_id: this.userId,
+        gabia_id: this.$store.state.gabiaId,
+        name: this.userName,
+      }
+
+      const APIURL = process.env.VUE_APP_API_URL;
+
+      if(this.passwordChange) {
+        if(this.oldPassword !== this.oldPasswordCheck) {
+          alert('비밀번호 확인을 확인해주세요.')
+          return;
+        }
+        userData.origin_password = this.oldPassword;
+        userData.new_password = this.newPassword;
+      } 
+      try {
+        await this.$axios.put(`${APIURL}/users/${this.userType.toLowerCase()}`, userData);
+        this.setUserData(userData)
+      } catch(err) {
+        console.log(err);
+      }
+      
+      await this.getUser();
+    },
+    async setUserData(userData) {
+      let data = {
+        data: userData
+      }
+      try {
+        await this.$store.dispatch('SETUSERDATA', data);
+      } catch({ message }) {
+        console.log(message)
       }
     }
   }

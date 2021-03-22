@@ -26,7 +26,7 @@
               required
               outlined
               label="세부 카테고리."
-              v-model="detailBoardType">
+              v-model="selectDetailBoardType">
             </v-select>
           </v-col>
           <v-col
@@ -280,7 +280,13 @@ export default {
       return this.priceSuggestion === '예' ? true : false;
     },
     dateTimeFormatter() {
-      return this.$moment(`${this.date}T${this.time}:00`).format('YYYY-MM-DDTHH:mm:ss');
+      let raffleClose = this.$moment(`${this.date}T${this.time}:00`);
+      let now = this.$moment();
+
+      if(raffleClose.diff(now, 'second') <= 0) {
+        return false;
+      }
+      return raffleClose.format('YYYY-MM-DDTHH:mm:ss');
     },
   },
   methods: {
@@ -301,20 +307,6 @@ export default {
         status: 'CREATED',
         title: this.title,
         description: this.description,
-        // notice
-        notice_category: null,
-
-        //present
-        present_goods_category: null,
-        present_goods_status: null,
-        raffle_closed_at: null,
-        img: '',
-
-        //used
-        price_suggestion:null,
-        sell_price: null,
-        used_goods_category: null,
-        used_goods_status: null,
       }
 
       if(boardType === 'notice') {
@@ -348,6 +340,10 @@ export default {
       const APIURL = process.env.VUE_APP_API_URL;
       const form = this.postForm(this.boardType);
 
+      if(form.raffle_closed_at === false) {
+        alert('래플 종료시간이 이미 지난 날짜입니다.')
+        return;
+      }
       try {
         await this.$axios.post(`${APIURL}/boards/${this.boardType}/posts`, form);
         this.redirect();
