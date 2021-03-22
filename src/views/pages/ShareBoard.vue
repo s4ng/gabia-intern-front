@@ -34,6 +34,17 @@
             </td>
           </tr>
           <tr>
+            <td>카테고리</td>
+            <td
+              colspan="2">
+              <v-select
+                label="카테고리 선택"
+                v-model="boardCategory"
+                :items="$store.state.boardCategory">
+              </v-select>
+            </td>
+          </tr>
+          <tr>
             <td>나눔상태</td>
             <td>
               <v-checkbox
@@ -106,6 +117,7 @@ export default {
     shareItems: [],
     sort: 'time',
     searchKeywordText: '',
+    boardCategory: '',
     searchKeyword: '',
     statusCreated: false,
     statusClosed: false,
@@ -119,6 +131,7 @@ export default {
       const {
         page,
         sort,
+        boardCategory,
         searchKeyword,
         statusCreated,
         statusClosed,
@@ -129,6 +142,7 @@ export default {
       return {
         page,
         sort,
+        boardCategory,
         searchKeyword,
         statusCreated,
         statusClosed,
@@ -149,6 +163,10 @@ export default {
         page: this.page
       };
 
+      if(this.boardCategory !== '') {
+        params.category = this.boardCategory;
+      }
+
       if(this.searchKeyword !== '') {
         params.title = this.searchKeyword;
       }
@@ -157,20 +175,21 @@ export default {
         params.status = this.statusCreated ? 'CREATED' : 'CLOSED'
       }
 
-      if(this.usedGoodsStatusNew ^ this.usedGoodsStatusUsed) {
-        params.goodsStatus = this.usedGoodsStatusNew ? 'NEW' : 'USED'
+      if(this.itemStatusNew ^ this.itemStatusUsed) {
+        params.goodsStatus = this.itemStatusNew ? 'NEW' : 'USED'
       }
 
       if(this.sort !== 'time') {
         params.sort = this.sort;
       }
 
-      const APIURL = `${process.env.VUE_APP_API_URL}/boards/present/posts?page=${this.page}`
+      const APIURL = `${process.env.VUE_APP_API_URL}/boards/present/posts/search`
 
       try {
         const { data } = await this.$axios.get(APIURL, {params: params});
+        console.log(params)
         this.shareItems = data.data.board_list;
-        this.pageLength = data.data.page_count;
+        this.pageLength = data.data.total_page;
       } catch(err) {
         alert(`나눔 게시판 조회 오류\nerr: ${err}`);
       }

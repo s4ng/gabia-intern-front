@@ -67,7 +67,7 @@
           @click="leaveChat"
           style="margin-right: 100px">채팅 나가기</a>
         <a 
-          v-if="room.seller_id === userId && room.chat_room_name.split('|')[4] !== 'CLOSED'"
+          v-if="room.seller_id === userId && (room.buyer_status !== 'CLOSED' || room.seller_status !== 'CLOSED')"
       
           @click="completeDeal"
           style="margin-left: 100px">거래 완료</a> 

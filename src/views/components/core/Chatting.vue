@@ -43,7 +43,7 @@
                   class="mx-3"
                   width="100"
                   height="100"
-                  :src="imgUrlSetter(chatRoomNameSplitter(room.chat_room_name)[5])">
+                  :src="imgUrlSetter(chatRoomNameSplitter(room.chat_room_name)[4])">
                 </v-img>
               </v-col>
               <v-col
@@ -174,30 +174,16 @@ export default {
       return `${seller} / ${buyer}` 
     },
     chatRoomStatusSetter(room) {
-      let status = this.chatRoomNameSplitter(room.chat_room_name)[4];
-
-      if(status === 'CREATED') {
-        return '판매중'
-      }
-      if(status === 'MODIFIED') {
-        return '판매중'
-      }
-      if(status === 'CLOSED') {
+      if(room.buyer_status === 'CLOSED' || room.seller_status === 'CLOSED') {
         return '판매완료'
       }
+      return '판매중'
     },
     chatRoomColorSetter(room) {
-      let status = this.chatRoomNameSplitter(room.chat_room_name)[4];
-
-      if(status === 'CREATED') {
-        return '#A5D6A7'
-      }
-      if(status === 'MODIFIED') {
-        return '#A5D6A7'
-      }
-      if(status === 'CLOSED') {
+      if(room.buyer_status === 'CLOSED' || room.seller_status === 'CLOSED') {
         return '#EF9A9A'
       }
+      return '#A5D6A7'
     }
   }
 }

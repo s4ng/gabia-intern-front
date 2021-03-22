@@ -33,6 +33,17 @@
             </td>
           </tr>
           <tr>
+            <td>카테고리</td>
+            <td
+              colspan="2">
+              <v-select
+                label="카테고리 선택"
+                v-model="boardCategory"
+                :items="$store.state.boardCategory">
+              </v-select>
+            </td>
+          </tr>
+          <tr>
             <td>판매상태</td>
             <td>
               <v-checkbox
@@ -146,6 +157,7 @@ export default {
     page: 1,
     pageLength: 1,
     usedItems: [],
+    boardCategory: '',
     min: null,
     max: null,
     // time, lowPrice, highPrice
@@ -167,6 +179,7 @@ export default {
         min,
         max,
         sort,
+        boardCategory,
         searchKeyword,
         statusCreated,
         statusClosed,
@@ -179,6 +192,7 @@ export default {
         min,
         max,
         sort,
+        boardCategory,
         searchKeyword,
         statusCreated,
         statusClosed,
@@ -199,6 +213,10 @@ export default {
       let params = {
         page: this.page
       };
+
+      if(this.boardCategory !== '') {
+        params.category = this.boardCategory;
+      }
 
       if(this.min === null && this.max !== null) {
         params.max = this.max;
@@ -234,7 +252,7 @@ export default {
       try {
         const { data } = await this.$axios.get(APIURL, {params: params});
         this.usedItems = data.data.board_list;
-        this.pageLength = data.data.page_count;
+        this.pageLength = data.data.total_page;
       } catch(err) {
         alert(`중고 게시판 조회 오류\n${err}`);
       }

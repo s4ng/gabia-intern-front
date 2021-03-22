@@ -77,7 +77,7 @@ export default {
       try {
         const res = await this.$axios.get(`${APIURL}/boards/notice/posts?page=${pageNum}`);
         this.boards = res.data.data.board_list;
-        this.pageLength = res.data.data.page_count
+        this.pageLength = res.data.data.total_page
       } catch(err) {
         alert(`불러오기 실패\nerr: ${err}`)
       }

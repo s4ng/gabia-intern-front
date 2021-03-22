@@ -10,6 +10,7 @@ export default new Vuex.Store({
   state: {
     barColor: 'rgba(30, 30, 30, .8), rgba(30, 30, 30, .8)',
     boardType: ['notice', 'used', 'present'],
+    boardCategory: ['DIGITAL', 'BOOK', 'TICKET', 'FOOD'],
     drawer: null,
     userId: null,
     userType: '',
