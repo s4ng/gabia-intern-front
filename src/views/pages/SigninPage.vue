@@ -7,33 +7,36 @@
       <v-container
         class="ma-5">
         <v-card-title class="ma-2 ml-4 mb-10">로그인</v-card-title>
-        <v-text-field
-          label="아이디"
-          v-model="userId"
-          outlined
-          :rules="idRules"
-          class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
-        <v-text-field
-          label="비밀번호"
-          v-model="password"
-          @keyup.enter="signIn"
-          :rules="pwRules"
-          outlined
-          class="mt-2 mb-2 mr-4 pr-2"
-          type="password"></v-text-field>
-        <v-container 
-          class="d-flex">
-          <v-btn
-            class="mr-auto"
-            color="success"
-            @click="redirectToSignUp">회원가입</v-btn>
-          <v-btn
-            class="ml-auto"
-            color="success"
-            @click="signIn">로그인</v-btn>
-        </v-container>
+        <v-form v-model="valid">
+          <v-text-field
+            label="아이디"
+            v-model="userId"
+            outlined
+            :rules="idRules"
+            class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
+          <v-text-field
+            label="비밀번호"
+            v-model="password"
+            @keyup.enter="signIn"
+            :rules="pwRules"
+            outlined
+            class="mt-2 mb-2 mr-4 pr-2"
+            type="password"></v-text-field>
+          <v-container 
+            class="d-flex">
+            <v-btn
+              class="mr-auto"
+              color="success"
+              @click="redirectToSignUp">회원가입</v-btn>
+            <v-btn
+              :disabled="!valid"
+              class="ml-auto"
+              color="success"
+              @click="signIn">로그인</v-btn>
+          </v-container>
+        </v-form>
       </v-container>
-      <v-divider></v-divider>
+      <!-- <v-divider></v-divider>
       <v-card
         @click="hiworksSignin"
         class="mx-16">
@@ -54,7 +57,7 @@
             <h1>로그인</h1>
           </v-col>
         </v-row>
-      </v-card>
+      </v-card> -->
     </v-card>
   </v-container>
 </template>
@@ -62,6 +65,7 @@
 <script>
 export default {
   data: () => ({
+    valid: true,
     userId: '',
     password: '',
     idRules: [
@@ -75,20 +79,25 @@ export default {
   }),
   methods: {
     async signIn() {
+
+      if(!this.valid) {
+        return;
+      }
       // 하드코딩 수정
-      let userType = 'MANAGER';
       let userId = this.userId;
       let password = this.password;
 
       try {
-        await this.$store.dispatch('SIGNIN', { userId, password, userType });
-        this.redirect();
+        await this.$store.dispatch('SIGNIN', { userId, password });
       } catch({ message }) {
         alert(`로그인 실패\n${message}`);
       }
-    },
-    redirect() {
-      this.$router.push('/');
+
+      try {
+        await this.$store.dispatch('GETALERTKEYWORD', this.$store.state.userId);
+      } catch(err) {
+        console.log(err)
+      }
     },
     redirectToSignUp() {
       this.$router.push('/signup');

@@ -117,11 +117,6 @@ export default {
         title: 'notice',
         to: '/notice',
       },
-      {
-        icon: 'mdi-file-multiple',
-        title: 'transaction history',
-        to: '/history',
-      }
     ],
   }),
 

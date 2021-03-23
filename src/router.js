@@ -33,12 +33,6 @@ const router =  new Router({
           component: () => import('@/views/pages/ShareBoard'),
         },
         {
-          name: '거래 내역',
-          path: 'history',
-          component: () => import('@/views/pages/DealHistory'),
-          meta: { auth: true}
-        },
-        {
           name: '프로필',
           path: 'profile',
           component: () => import('@/views/pages/UserProfile'),

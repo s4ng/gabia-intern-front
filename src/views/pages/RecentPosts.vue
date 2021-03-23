@@ -1,29 +1,40 @@
 <template>
   <v-container>
-    <v-row
-      max-width="1000"
-      class="ma-auto">
-      <h2 data-test="recent-used-title" class="ma-1 ml-5">최근 중고게시물</h2>
-    </v-row>
     <v-container
-      class="d-flex flex-wrap">
-      <base-item-card
-        v-for="item in usedItems"
-        :key="item.id"
-        :board="item"/>
+      class="d-flex justify-end ma-1 px-16">
+      <base-write-post-button
+        fromBoard="used">
+      </base-write-post-button>
     </v-container>
-    <v-row
+    <v-card
       max-width="1000"
-      class="ma-auto">
-      <h2 data-test="recent-share-title" class="ma-1 ml-5">최근 나눔게시물</h2>
-    </v-row>
-    <v-container
-      class="d-flex flex-wrap">
-      <base-item-card
-        v-for="item in shareItems"
-        :key="item.id"
-        :board="item"/>
-    </v-container>
+      class="mx-auto py-6">
+      <v-row
+        max-width="1000"
+        class="ma-auto">
+        <h2 data-test="recent-used-title" class="ma-1 ml-5">최근 중고게시물</h2>
+      </v-row>
+      
+      <v-container
+        class="d-flex flex-wrap">
+        <base-item-card
+          v-for="item in usedItems"
+          :key="item.id"
+          :board="item"/>
+      </v-container>
+      <v-row
+        max-width="1000"
+        class="ma-auto">
+        <h2 data-test="recent-share-title" class="ma-1 ml-5">최근 나눔게시물</h2>
+      </v-row>
+      <v-container
+        class="d-flex flex-wrap">
+        <base-item-card
+          v-for="item in shareItems"
+          :key="item.id"
+          :board="item"/>
+      </v-container>
+    </v-card>
   </v-container>
 </template>
 
@@ -36,7 +47,7 @@ export default {
   }),
   methods: {
     async getUsedBoard() {
-      const APIURL = `${process.env.VUE_APP_API_URL}/boards/used/posts?page=${this.page}`
+      const APIURL = `${process.env.VUE_APP_API_URL}/boards/used/posts/search?page=${this.page}`
 
       try {
         const { data } = await this.$axios.get(APIURL);
@@ -46,7 +57,7 @@ export default {
       }
     },
     async getShareBoard() {
-      const APIURL = `${process.env.VUE_APP_API_URL}/boards/present/posts?page=${this.page}`
+      const APIURL = `${process.env.VUE_APP_API_URL}/boards/present/posts/search?page=${this.page}`
 
       try {
         const { data } = await this.$axios.get(APIURL);

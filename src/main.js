@@ -12,12 +12,10 @@ import moment from 'moment-timezone'
 import Stomp from 'stomp-websocket'
 import SockJs from 'sockjs-client'
 
-// 웹 소켓 설정
-let sock = new SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
-let ws = Stomp.over(sock);
-ws.connect();
+Vue.prototype.$Stomp = Stomp;
+Vue.prototype.$SockJs = SockJs;
 
-Vue.prototype.$ws = ws;
+Vue.prototype.$noImageUrl = 'http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif'
 
 Vue.config.productionTip = false
 

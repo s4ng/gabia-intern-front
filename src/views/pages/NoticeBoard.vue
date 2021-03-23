@@ -7,6 +7,7 @@
         v-if="$store.state.userType === 'MANAGER'"
         class="d-flex justify-end ma-4">
         <base-write-post-button
+          v-if="$store.state.userType === 'MANAGER'"
           fromBoard="notice">
         </base-write-post-button>
       </v-container>
@@ -20,6 +21,7 @@
       </v-row>
       <v-card
         class="ma-1"
+        elevation="1"
         v-for="board in boards"
         :key="board.board_id">
         <router-link 
@@ -71,12 +73,11 @@ export default {
     async getNoticeBoards() {
 
       const APIURL = process.env.VUE_APP_API_URL;
-      let pageNum = 1;
       
       try {
-        const res = await this.$axios.get(`${APIURL}/boards/notice/posts?page=${pageNum}`);
+        const res = await this.$axios.get(`${APIURL}/boards/notice/posts?page=${this.page}`);
         this.boards = res.data.data.board_list;
-        this.pageLength = res.data.data.page_count
+        this.pageLength = res.data.data.total_page
       } catch(err) {
         alert(`불러오기 실패\nerr: ${err}`)
       }

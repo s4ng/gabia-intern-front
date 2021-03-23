@@ -1,11 +1,8 @@
 <template>
   <v-container
     class="d-flex align-start flex-column">
-    <v-container
-      class="d-flex flex-wrap">
-      <v-card-title
-          class="ma-2"
-          v-html="roomNameSetter"></v-card-title>
+    <div
+      class="px-1 d-flex flex-wrap">
       <v-btn
           class="ml-auto"
           small
@@ -16,18 +13,25 @@
           mdi-backspace-outline
           </v-icon>
       </v-btn>
-    </v-container>
+      <router-link
+        class="text-lg-h3 ma-2 link"
+        v-html="roomNameSetter"
+        :to="{name: '게시판',  params: {boardId: room.board_id}, query: { board: 'used'}}"
+        >
+      </router-link>
+    </div>
 
     <v-list id="chatList">
       <div>
         <div
+          style="padding-top: 0"
           class="d-flex"
           v-for="item in chatting"
           :key="item.chat_message_id">
           <v-card
             max-width="250"
-            class="pa-3 mr-2 d-inline-flex"
-            :class="item.user_id === userId && 'ml-auto'"
+            class="pa-3 mr-2 my-2 d-inline-flex"
+            :class="item.user_id === userId && 'ml-auto yellow lighten-4' || 'gray lighten-4'"
             v-if="item.message !== ''"
             v-text="item.message">
           </v-card>
@@ -66,7 +70,8 @@
           @click="leaveChat"
           style="margin-right: 100px">채팅 나가기</a>
         <a 
-          v-if="room.seller_id === userId"
+          v-if="room.seller_id === userId && (room.buyer_status !== 'CLOSED' || room.seller_status !== 'CLOSED')"
+      
           @click="completeDeal"
           style="margin-left: 100px">거래 완료</a> 
       </div>
@@ -77,16 +82,20 @@
 </template>
 
 <script>
-
 export default {
   props: ['room'],
   data: () => ({
     userId: null,
     message: '',
-    chatting: []
+    chatting: [],
+    ws: undefined,
   }),
   created() {
-    // this.$ws.connect();
+    // 웹 소켓 설정
+    let sock = new this.$SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
+    this.ws = this.$Stomp.over(sock);
+    this.ws.debug = () => {};
+
     this.userId = this.$store.state.userId;
     this.stompStart();
   },
@@ -95,19 +104,27 @@ export default {
       this.$emit('go-to-chat-list');
     },
     sendMessage() {
-      this.$ws.send('/pub/chat/room', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'TALK', chat_room_id: this.room.chat_room_id }));
+      if(this.message === '') {
+        return;
+      }
+      this.ws.send('/pub/chat/room', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'TALK', chat_room_id: this.room.chat_room_id }));
       this.message = '';
     },
     stompStart() {
-      this.$ws.subscribe('/sub/chat/room/'+this.room.chat_room_id, (reponse) => {
-        this.chatting = JSON.parse(reponse.body);
-      });
-      this.$ws.send('/pub/chat/room/start', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'ENTER', chat_room_id: this.room.chat_room_id }));
+      this.ws.connect(
+        {},
+        () => {
+          this.ws.subscribe('/sub/chat/room/'+this.room.chat_room_id, (reponse) => {
+            this.chatting = JSON.parse(reponse.body);
+          });
+          this.ws.send('/pub/chat/room/start', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'ENTER', chat_room_id: this.room.chat_room_id }));
+        }
+      )
     },
     leaveChat() {
       if(confirm('채팅방을 나가시겠습니까?')) {
         this.goToChatList();
-        this.$ws.send('/pub/chat/room/leave', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'LEAVE', chat_room_id: this.room.chat_room_id }));
+        this.ws.send('/pub/chat/room/leave', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'LEAVE', chat_room_id: this.room.chat_room_id }));
       }
     },
     completeDeal() {
@@ -115,23 +132,37 @@ export default {
         this.goToChatList();
         this.ws.send('/pub/chat/room/close', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'CLOSE', chat_room_id: this.room.chat_room_id }));
       }
-    }
+    },
   },
   computed: {
     roomNameSetter() {
-      let splitName = this.room.chat_room_name.split('/');
-      return splitName[0] + '</br>' + splitName[1];
-    }
+      return this.room.chat_room_name.split('|')[2]
+    },
   }
 }
 </script>
 
 <style>
+.link:visited {
+  color: black;
+}
+.link:link {
+  color: black;
+}
+.link:active {
+  color: black;
+}
+.link:hover {
+   color: grey;
+}
 #chatList{
   height:410px;/* or any height you want */
   width:350px;
   overflow-y:auto;
   display: flex;
   flex-direction: column-reverse;
+}
+.v-card {
+  margin: 0;
 }
 </style>

@@ -17,12 +17,12 @@
 
       <v-container
         v-if="!isChatting">
-        <v-container
+        <div
           class="d-flex flex-wrap">
           <v-card-title
             class="ma-2">채팅 목록
           </v-card-title>
-        </v-container>
+        </div>
         <!-- FIXME : 채팅 리스트용 카드 넣는 부분 -->
         
           <v-card
@@ -35,9 +35,36 @@
               <template v-slot:badge>
                 <span>{{ yetCount(room) }}</span>
               </template>
-              <v-card-text v-html="chatRoomNameSetter(room)"></v-card-text>
             </v-badge> 
-            <v-card-text v-else v-html="chatRoomNameSetter(room)"></v-card-text>
+            <v-row>
+              <v-col
+                cols="3">
+                <v-img
+                  class="mx-3"
+                  width="100"
+                  height="100"
+                  :src="imgUrlSetter(chatRoomNameSplitter(room.chat_room_name)[4])">
+                </v-img>
+              </v-col>
+              <v-col
+                cols="9">
+                <h4 
+                  class="pa-2"
+                  v-text="chatRoomNameSplitter(room.chat_room_name)[2]"></h4>
+                <div
+                  class="pa-2"
+                  v-text="chatRoomUserNameSetter(room)">
+                </div>
+                <div
+                  class="d-flex pa-1">
+                <v-card 
+                  :color="chatRoomColorSetter(room)"
+                  class="ma-0 pa-1"
+                  v-text="chatRoomStatusSetter(room)">
+                </v-card>
+                </div>
+              </v-col>
+            </v-row>
           </v-card>
          
       </v-container>
@@ -72,8 +99,14 @@ export default {
     rooms: [],
     room: {},
     userId: null,
+    ws: undefined,
   }),
   created() {
+    // 웹 소켓 설정
+    let sock = new this.$SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
+    this.ws = this.$Stomp.over(sock);
+    this.ws.debug = () => {};
+
     this.userId = this.$store.state.userId;
     this.stompStart();
   },
@@ -112,10 +145,15 @@ export default {
       this.yetCount = this.notifications.filter(e => e.status==='YET').length;
     },
     stompStart() {
-      this.$ws.subscribe('/sub/chat/user/'+this.userId, (reponse) => {
-        this.getChatList(JSON.parse(reponse.body));
-      });
-      this.$ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
+      this.ws.connect(
+        {},
+        () => {
+          this.ws.subscribe('/sub/chat/user/'+this.userId, (reponse) => {
+            this.getChatList(JSON.parse(reponse.body));
+          });
+          this.ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
+        }
+      );
     },
     yetCount(chatRoom) {
       if(chatRoom.seller_id === this.userId) {
@@ -124,13 +162,28 @@ export default {
         return chatRoom.buyer_count;
       }
     },
-    chatRoomNameSetter(room) {
-      let roomName = room.chat_room_name;
-      if(roomName === '' || roomName === undefined) {
-        return 'err'
+    chatRoomNameSplitter(chatRoom) {
+      return chatRoom.split('|');
+    },
+    imgUrlSetter(imgUrl) {
+      return `${process.env.VUE_APP_API_URL}/images/${imgUrl}`;
+    },
+    chatRoomUserNameSetter(room) {
+      let seller = `판매자 : ${this.chatRoomNameSplitter(room.chat_room_name)[0]}`;
+      let buyer = `구매자 : ${this.chatRoomNameSplitter(room.chat_room_name)[1]}`
+      return `${seller} / ${buyer}` 
+    },
+    chatRoomStatusSetter(room) {
+      if(room.buyer_status === 'CLOSED' || room.seller_status === 'CLOSED') {
+        return '판매완료'
       }
-      let split = roomName.split('/');
-      return split[2]+ '<br>' + split[0] + '&nbsp&nbsp&nbsp&nbsp' + split[1]; 
+      return '판매중'
+    },
+    chatRoomColorSetter(room) {
+      if(room.buyer_status === 'CLOSED' || room.seller_status === 'CLOSED') {
+        return '#EF9A9A'
+      }
+      return '#A5D6A7'
     }
   }
 }
@@ -139,7 +192,8 @@ export default {
 <style>
   #chatting {
     position: fixed;
-    margin:85px;
+    margin:35px;
+    margin-bottom: 90px;
     right: 0;
     bottom: 0;
   }
