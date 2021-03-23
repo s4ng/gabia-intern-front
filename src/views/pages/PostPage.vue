@@ -3,6 +3,12 @@
     <v-card
       class="mx-auto my-6"
       max-width="1000">
+      <v-card
+        v-if="board.user_id === userId"
+        width="90"
+        @click="removePost"
+        style="color : #B71C1C"
+        class="pa-2 ml-auto">글 삭제하기</v-card>
       <v-container>
         <v-row
           class="px-5">
@@ -10,7 +16,9 @@
             v-if="board.board_type !== 'NOTICE'"
             cols="4">
             <v-img
-              lazy-src="http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif"></v-img>
+              height="300"
+              width="300"
+              :src="imgUrlSetter"></v-img>
           </v-col>
           <v-col
             cols="8">
@@ -18,15 +26,72 @@
               class="pt-5 mt-10 ml-3 headline"
               v-text="board.title"></v-card-title>
             <v-container
-              class="d-flex">
+              class="d-flex flex-wrap">
               <v-card-subtitle
-                v-text="board.name"></v-card-subtitle>
+                v-text="board.name"/>
               <v-card-subtitle
-                v-text="dateFormatter"></v-card-subtitle>
-              <!-- <v-card-subtitle>
-                FIXME API create date
-              </v-card-subtitle> -->
+                v-text="dateFormatter(board.created_at)"/>
+              <p
+                class="ma-auto"
+                style="font-size: 20px;"
+                v-if="board.board_type === 'USED'"
+                v-text="currencyFormatter"/>
+              <v-btn
+                v-if="board.board_type === 'PRESENT' && isJoinedRaffle === false"
+                color="#1976D2"
+                @click="joinRaffle"
+                class="ma-auto">나눔받기 참여</v-btn>
+              <v-btn
+                v-if="board.board_type === 'PRESENT' && isJoinedRaffle === true"
+                color="#EC407A"
+                @click="cancelRaffle"
+                class="ma-auto">나눔받기 취소</v-btn>
             </v-container>
+            <v-row
+              class="pl-2">
+              <v-container
+                v-if="board.board_type === 'USED'"
+                class="d-flex flex-wrap">
+                <v-card-subtitle>가격제시 : </v-card-subtitle>
+                <v-card-subtitle v-text="priceSuggestionFormatter"/>
+                <div v-if="board.price_suggestion">
+                  <v-btn
+                    v-if="board.user_id === userId"
+                    color="gray"
+                    class="ma-6">가격제시</v-btn>
+                  <v-btn
+                    v-else
+                    color="#1976D2"
+                    class="ma-6">가격제시</v-btn>
+                </div>
+                <v-btn
+                  v-if="board.status === 'CLOSED'"
+                  color="gray"
+                  class="ma-6">거래 완료</v-btn>
+                <div v-else>
+                  <v-btn
+                    v-if="board.user_id === userId"
+                    color="gray"
+                    class="ma-6">채팅으로 거래하기</v-btn>
+                  <v-btn
+                    v-else
+                    color="#1976D2"
+                    @click="chattingRequest"
+                    class="ma-6">채팅으로 거래하기</v-btn>
+                </div>
+              </v-container>
+              <v-container
+                v-if="board.board_type === 'PRESENT'"
+                class="d-flex flex-wrap">
+                <v-card-subtitle
+                  v-text="leftTime"/>
+                <p
+                  class="ma-auto"
+                  style="font-size: 20px;"
+                  v-if="board.board_type === 'PRESENT'"
+                  v-text="raffleParticipantsToText"/>
+              </v-container>
+            </v-row>
           </v-col>
         </v-row>
       </v-container>
@@ -59,31 +124,80 @@ export default {
     boardId: null,
   },
   data: () => ({
+    userId : '',
     board: {
       board_type: '',
       description: '',
-      created_at: '',
     },
-    comments: []
+    leftTimeInterval: '',
+    leftTime: '',
+    comments: [],
+    isJoinedRaffle: false,
+    raffleParticipants : 50,
   }),
+  created() {
+    this.userId = this.$store.state.userId;
+  },
   computed: {
-    dateFormatter() {
-      return this.$moment(new Date(this.board.created_at)).format('YYYY-MM-DD HH:mm:ss')
-    },
     descriptionFormatter() {
       return this.board.description.replace(/\n/g, '<br/>');
+    },
+    priceSuggestionFormatter() {
+      return this.board.price_suggestion ? '받음' : '안받음';
+    },
+    currencyFormatter() {
+      return Intl.NumberFormat('ko-kR', {style: 'currency', currency: 'KRW'}).format(this.board.sell_price);
+    },
+    raffleParticipantsToText() {
+      return this.raffleParticipants + ' 명';
+    },
+    imgUrlSetter() {
+      if(this.board.img === '' || this.board.img === undefined) {
+        return 'http://www.visioncyber.kr/rtimages/n_sub/no_detail_img.gif'
+      }
+      return `${process.env.VUE_APP_API_URL}/images/${this.board.img}`
     }
   },
   methods: {
-    async getPost() {
+    async createRoom() {
+      try {
+        await this.$axios.post(`${process.env.VUE_APP_API_URL}/chat/room/`, {
+          board_id: this.board.board_id,
+          user_id: this.$store.state.userId, 
+          seller_id: this.board.user_id
+        }) 
+      } catch (error) {
+        alert(error);
+      }
+    },
+    async chattingRequest() {
+      if(confirm('거래를 신청할까요?')) {
+        try {
+          if(!this.$store.state.isChattingListShow) { 
+            await this.$store.dispatch('CHATTINGLISTSHOW');
+          }
+        } catch(err) {
+          alert(`채팅 리스트 조회 실패\nerr:${err}`);
+        }
+        this.createRoom();
+      }
+    },
+    dateFormatter(date) {
+      if(date === null || date === '') {
+        return 'error';
+      }
 
+      return this.$moment(date).format('YYYY-MM-DD HH:mm:ss')
+    },
+    async getPost() {
       const APIURL = `${process.env.VUE_APP_API_URL}/boards/${this.$route.query.board}`;
 
       try {
         const postData = await this.$axios.get(`${APIURL}/posts/${this.boardId}`)
         this.board = postData.data.data;
+        console.log(this.board)
       } catch(err) {
-        alert(`글 조회 실패\nerr: ${err}`)
+        alert(`글 조회 실패\n${err}`)
       }
     },
     async getComments() {
@@ -94,17 +208,62 @@ export default {
         const commentData = await this.$axios.get(`${APIURL}/comments?boardId=${this.boardId}`)
         this.comments = commentData.data.data
       } catch(err) {
-        alert(`댓글 조회 실패\nerr: ${err}`)
+        alert(`댓글 조회 실패\n${err}`)
+      }
+    },
+    leftTimeSetter() {
+      let raffleClose = this.$moment(this.board.raffle_closed_at);
+      let now = this.$moment()
+
+      if(raffleClose.diff(now, 'second') <= 0) {
+        this.leftTime = '끝났음'
+        return;
+      }
+
+      let leftTimeSecond = raffleClose.diff(now)
+      this.leftTime = `${this.$moment.duration(leftTimeSecond).locale('ko').humanize()} 남았음`;
+    },
+    joinRaffle() {
+      if(this.leftTime === '끝났음') {
+        alert('신청이 마감되었습니다.');
+        return;
+      }
+      // FIXME : API 연결로 수정
+      this.isJoinedRaffle = true;
+    },
+    cancelRaffle() {
+      if(this.leftTime === '끝났음') {
+        alert('신청이 마감되었습니다.');
+        return;
+      }
+      this.isJoinedRaffle = false;
+    },
+    async removePost() {
+      if(confirm('게시물을 삭제하시겠습니까?')) {
+        const APIURL = process.env.VUE_APP_API_URL;
+
+        try {
+          this.$axios.delete(`${APIURL}/boards/${this.board.board_type.toLowerCase()}/posts/${this.board.board_id}?userId=${this.userId}`)
+          this.$router.push(`/${this.board.board_type}`)
+        } catch(err) {
+          alert(`게시물 삭제에 실패했습니다.\n${err}`)
+        }
       }
     },
   },
-  mounted() {
-    this.getPost();
+  async mounted() {
+    await this.getPost();
     this.getComments();
+
+    // 컴포넌트가 Mount 되고 나서 지연없이 바로 한 번 실행
+    this.leftTimeSetter();
+    // 그 후 Interval
+    let leftTimeInterval = setInterval(() => {
+      if(this.leftTime === '끝났음') {
+        clearInterval(leftTimeInterval);
+      }
+      this.leftTimeSetter();
+    }, 1000)
   }
 }
 </script>
-
-<style>
-
-</style>

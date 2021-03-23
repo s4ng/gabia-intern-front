@@ -13,6 +13,12 @@
         :key="item.id"
         :board="item"/>
     </v-container>
+    <v-divider class="my-1"/>
+    <v-pagination
+      v-model="page"
+      :length="pageLength"
+      :total-visible="10">
+    </v-pagination>
   </v-container>
 </template>
 
@@ -20,17 +26,25 @@
 export default {
   data: () => ({
     page: 1,
+    pageLength: 1,
     usedItems: [],
   }),
+  watch: {
+    page: function() {
+      this.getUsedBoard();
+      this.$vuetify.goTo('#header');
+    }
+  },
   methods: {
     async getUsedBoard() {
       const APIURL = `${process.env.VUE_APP_API_URL}/boards/used/posts?page=${this.page}`
 
       try {
         const { data } = await this.$axios.get(APIURL);
-        this.usedItems = data.data;
+        this.usedItems = data.data.board_list;
+        this.pageLength = data.data.page_count;
       } catch(err) {
-        alert(`중고 게시판 조회 오류\nerr: ${err}`);
+        alert(`중고 게시판 조회 오류\n${err}`);
       }
     }
   },

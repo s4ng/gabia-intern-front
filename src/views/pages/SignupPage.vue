@@ -31,6 +31,7 @@
           v-model="nickName"
           outlined
           :rules="nickRules"
+          @keyup.enter="signUp"
           class="mt-2 mb-2 mr-4 pr-2"></v-text-field>
         <v-container
           class="d-flex justify-end">
@@ -76,7 +77,7 @@ export default {
   },
   methods: {
     async signUpRequest(userData) {
-      const APIURL = `${process.env.VUE_APP_API_URL}/users/${userData.user_type.toLowerCase()}`;
+      const APIURL = `${process.env.VUE_APP_API_URL}/users`;
 
       try {
         await this.$axios.post(APIURL, userData)
@@ -94,7 +95,6 @@ export default {
 
       // FIXME : userType 하드코드 추후 수정
       const userData = {
-        user_type: 'MANAGER',
         gabia_id: this.userId,
         name: this.nickName,
         password: this.password

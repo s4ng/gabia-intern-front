@@ -40,7 +40,7 @@ export default {
 
       try {
         const { data } = await this.$axios.get(APIURL);
-        this.usedItems = data.data.slice(0, 6);
+        this.usedItems = data.data.board_list.slice(0, 6);
       } catch(err) {
         alert(`중고 게시판 조회 오류\nerr: ${err}`);
       }
@@ -50,7 +50,7 @@ export default {
 
       try {
         const { data } = await this.$axios.get(APIURL);
-        this.shareItems = data.data.slice(0, 6);
+        this.shareItems = data.data.board_list.slice(0, 6);
       } catch(err) {
         alert(`나눔 게시판 조회 오류\nerr: ${err}`);
       }
@@ -62,7 +62,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

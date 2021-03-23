@@ -13,6 +13,7 @@ export default new Vuex.Store({
     userId: null,
     userType: '',
     userName: '',
+    isChattingListShow: false
     // password: null,
   },
   mutations: {
@@ -28,6 +29,9 @@ export default new Vuex.Store({
       state.userId = '';
       state.userName = '';
       state.userType = '';
+    },
+    CHATTINGLISTSHOW(state) {
+      state.isChattingListShow = !state.isChattingListShow;
     }
   },
   actions: {
@@ -45,6 +49,7 @@ export default new Vuex.Store({
         .post(`${APIURL}/users/${userType.toLowerCase()}/login`, USERDATA)
         .then(res => {
           commit('SIGNIN', res.data)
+          window.location.reload();
         })
         .catch(err => {
           alert(`로그인에 실패했습니다.\n에러 : ${err}`)
@@ -53,10 +58,16 @@ export default new Vuex.Store({
     SIGNOUT({ commit }) {
       commit('SIGNOUT')
     },
+    CHATTINGLISTSHOW({ commit }) {
+      commit('CHATTINGLISTSHOW')
+    }
   },
   getters: {
     isSignedIn(state) {
       return state.userId !== '';
+    },
+    getIsChattingListShow(state) {
+      return state.chattingListShow
     }
   },
   plugins: [
