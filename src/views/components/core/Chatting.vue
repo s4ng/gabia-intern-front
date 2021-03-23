@@ -105,7 +105,7 @@ export default {
     // 웹 소켓 설정
     let sock = new this.$SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
     this.ws = this.$Stomp.over(sock);
-    // this.ws.debug = () => {};
+    this.ws.debug = () => {};
 
     this.userId = this.$store.state.userId;
     this.stompStart();
