@@ -321,8 +321,8 @@ export default {
         const APIURL = process.env.VUE_APP_API_URL;
 
         try {
-          this.$axios.delete(`${APIURL}/boards/${this.board.board_type.toLowerCase()}/posts/${this.board.board_id}?userId=${this.userId}`)
-          this.$router.push(`/${this.board.board_type}`)
+          await this.$axios.delete(`${APIURL}/boards/${this.board.board_type.toLowerCase()}/posts/${this.board.board_id}?userId=${this.userId}`)
+          await this.$router.push(`/${this.board.board_type}`)
         } catch(err) {
           alert(`게시물 삭제에 실패했습니다.\n${err}`)
         }

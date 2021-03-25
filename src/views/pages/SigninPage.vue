@@ -89,14 +89,9 @@ export default {
 
       try {
         await this.$store.dispatch('SIGNIN', { userId, password });
+        await this.$store.dispatch('GETALERTKEYWORD', this.$store.state.userId);
       } catch({ message }) {
         alert(`로그인 실패\n${message}`);
-      }
-
-      try {
-        await this.$store.dispatch('GETALERTKEYWORD', this.$store.state.userId);
-      } catch(err) {
-        console.log(err)
       }
     },
     redirectToSignUp() {
