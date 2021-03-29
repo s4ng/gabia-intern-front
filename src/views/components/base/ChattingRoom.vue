@@ -89,7 +89,6 @@ export default {
     message: '',
     chatting: [],
     ws: undefined,
-    a: 0,
   }),
   created() {
     // 웹 소켓 설정
