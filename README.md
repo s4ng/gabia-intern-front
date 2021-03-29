@@ -6,7 +6,7 @@
 
 ## 설치
 
-```
+```bash
 git clone https://gitlab.gabia.com/mentoring/intern/2021.01/g-market/web.git
 
 cd web
@@ -20,7 +20,7 @@ yarn
 
 ## 실행
 
-```
+```bash
 npm run serve
 
 # or
