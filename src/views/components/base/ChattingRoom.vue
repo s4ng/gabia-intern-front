@@ -132,8 +132,7 @@ export default {
       if(confirm('거래가 완료되었습니까?')) {
         this.goToChatList();
         this.ws.send('/pub/chat/room/close', {}, JSON.stringify({ user_id: this.userId, message: this.message, chat_message_type:'CLOSE', chat_room_id: this.room.chat_room_id }));
-        this.a++;
-        this.$router.push({ path : this.$route.fullPath, query: {a : this.a}});
+        this.$router.push({ path : this.$route.fullPath, query: {refresh : 1}});
       }
     },
   },

@@ -107,13 +107,40 @@
             </div>
             <div
               class="d-flex flex-wrap mb-3">
-              <v-card
+              <div
                 v-for="keyword in keywords"
-                :key="keyword.alert_keyword_id"
-                color="grey lighten-2"
-                class="pa-1 ma-1"
-                v-text="keyword.keyword"></v-card>
+                :key="keyword.alert_keyword_id">
+                <v-badge 
+                  class="my-2 mx-1 pointer" 
+                  color="grey" 
+                  overlap 
+                  bordered 
+                  @click.native="removeKeyword(keyword.alert_keyword_id)"
+                  content="x">
+                  <v-card
+                    color="grey lighten-2"
+                    class="pa-1 ma-1"
+                    v-text="keyword.keyword">
+                  </v-card>
+                </v-badge>
+              </div>
             </div>
+            <v-snackbar
+              v-model="snackbar"
+              :timeout="timeout"
+            >
+              {{ snackbarText }}
+              <template v-slot:action="{ attrs }">
+                <v-btn
+                  color="blue"
+                  text
+                  v-bind="attrs"
+                  @click="snackbar = false"
+                >
+                  Close
+                </v-btn>
+              </template>
+            </v-snackbar>
             <v-btn
               color="error"
               rounded
@@ -141,6 +168,9 @@ export default {
     oldPasswordCheck: '',
     newPassword: '',
     keywords: [],
+    snackbar: false,
+    snackbarText: '삭제되었습니다',
+    timeout: 1500,
   }),
   async created() {
     this.userId = await this.$store.state.userId;
@@ -218,7 +248,24 @@ export default {
       } catch({ message }) {
         console.log(message)
       }
-    }
+    },
+    async removeKeyword(keywordId) {
+      const APIURL = process.env.VUE_APP_API_URL;
+
+      try {
+        await this.$axios.delete(`${APIURL}/alert-keyword?id=${keywordId}`)
+        await this.getAlertKeyword();
+        this.snackbar = true;
+        this.keywords = this.$store.state.alertKeyword.data;
+      } catch(err) {
+        console.log(err);
+      }
+    },
   }
 }
 </script>
+<style>
+.pointer {
+  cursor: pointer;
+}
+</style>
