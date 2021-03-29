@@ -25,6 +25,11 @@
         </div>
         <!-- FIXME : 채팅 리스트용 카드 넣는 부분 -->
         
+        <div
+          v-if="rooms.length===0"
+          class="ma-10 text-center grey--text">
+          채팅방이 없습니다.
+        </div>
           <v-card
             class="px-1 py-4"
             v-for="room in rooms"
@@ -105,7 +110,7 @@ export default {
     // 웹 소켓 설정
     let sock = new this.$SockJs(`${process.env.VUE_APP_API_URL}/ws-stomp`);
     this.ws = this.$Stomp.over(sock);
-    this.ws.debug = () => {};
+    // this.ws.debug = () => {};
 
     this.userId = this.$store.state.userId;
     this.stompStart();
@@ -136,9 +141,11 @@ export default {
       this.room = room
     },
     goToChatList() {
+      this.ws.send('/pub/chat/user', {}, JSON.stringify({ user_id: this.userId }));
       this.isChatting = false;
     },
     getChatList(roomList) {
+      roomList.reverse();
       this.rooms = roomList;
     },
     alertCount() {

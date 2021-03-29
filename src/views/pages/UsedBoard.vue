@@ -275,10 +275,8 @@ export default {
       }
 
       if(this.min !== null || this.max !== null) {
-        if(this.min <= this.max) {
-          params.min = this.min;
-          params.max = this.max;
-        }
+        params.min = this.min;
+        params.max = this.max;
       }
 
       if(this.searchKeyword !== '') {
@@ -312,8 +310,8 @@ export default {
       this.boardCategory = '';
       this.statusCreated= false;
       this.statusClosed= false;
-      this.itemStatusNew= false;
-      this.itemStatusUsed= false;
+      this.usedGoodsStatusNew= false;
+      this.usedGoodsStatusUsed= false;
       this.min = null;
       this.max = null;
     },

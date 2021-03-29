@@ -1,6 +1,6 @@
 <template>
   <v-content>
-    <router-view />
+    <router-view :key="$route.fullPath"/>
 
     <dashboard-core-footer />
   </v-content>
@@ -13,5 +13,6 @@ export default {
   components: {
     DashboardCoreFooter: () => import('./Footer'),
   },
+
 }
 </script>

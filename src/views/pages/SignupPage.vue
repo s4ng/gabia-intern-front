@@ -92,7 +92,7 @@ export default {
         alert('회원가입 완료!\n로그인 해주세요.')
         this.$router.push('/signin')
       } catch(err) {
-        alert(err)
+        alert('이미 가입된 ID입니다.')
       }
     },
     async signUp() {
