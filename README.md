@@ -7,7 +7,7 @@
 ## 설치
 
 ```bash
-git clone https://gitlab.gabia.com/mentoring/intern/2021.01/g-market/web.git
+git clone https://github.com/s4ng/gabia-intern-front.git
 
 cd web
 
