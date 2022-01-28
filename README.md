@@ -2,7 +2,7 @@
 
 ## 배포
 
-http://dns-changmin.tk/
+http://129.154.49.47
 
 ## 설치
 
